@@ -7,7 +7,7 @@
 
     <section class="jumbotron">
       <div class="techs" layout-align="center">
-        <md-card ng-repeat="device in main.devices | orderBy:'device.d.myName'">
+        <md-card ng-class="device.status" ng-repeat="device in main.devices | orderBy:'device.d.myName'">
           <div class="thumbnail">
             <!--<img class="pull-right" ng-src="assets/images/{{ device.logo }}" alt="{{ device.title }}">-->
             <div class="caption">

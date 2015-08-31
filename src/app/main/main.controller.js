@@ -34,7 +34,7 @@
       var _payload = JSON.parse(payload);
       var _id2 = _payload.info && _payload.info.id;
       var _id = _payload.d && _payload.d.id;
-      _payload.status = vm.LWT[_id || _id2];
+      _payload.status = vm.LWT[_id || _id2] || "UNKNOWN";
       _payload.online = _payload.status !== "DEAD";
       vm.devices[_id || _id2] = _payload;
       delete vm.devices.undefined;
@@ -49,22 +49,23 @@
       var status = values[0];
       var id = values[1];
       var mac = topics[1];
-      
+
       if (mac && mac === status) {
         status = "online";
       }
-      
+
       vm.LWT[mac || id] = status;
-      $scope.$apply();
-      
+      // vm.devices[mac || id] .status = status;
+      if (vm.devices[mac || id]) {
+        vm.devices[mac || id].status = status;
+        $scope.$apply();
+      }
     });
     
-    //asynchronously 
+    //asynchronously
     mqttLWT.connect().then(mqttLWT.subscribe("esp8266/+/online"));
     myMqtt.connect().then(myMqtt.subscribe("esp8266/+/status"));
     mqttXYZ.connect().then(mqttXYZ.subscribe("esp8266/+/status"));
-
-
 
     vm.classAnimation = '';
     vm.showToastr = showToastr;

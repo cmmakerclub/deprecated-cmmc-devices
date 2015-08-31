@@ -31,16 +31,17 @@ html {
 }
 
 md-toolbar.md-default-theme {
-  background-color: black;
+  // background-color: black;
 }
 
 section.jumbotron {
   margin-bottom: 30px;
   padding: 1px 30px;
-  background-color: #5aadbb;
+  // background-color: #5aadbb;
   text-align: center;
 
   // color: white;
+ 
 
   h1 {
     font-size: 3em;
@@ -51,6 +52,8 @@ section.jumbotron {
   display: flex;
   flex-flow: row wrap;
 
+
+  
   md-card {
     width: 30%;
 
@@ -58,6 +61,14 @@ section.jumbotron {
       float: right;
       width: 50px;
     }
+    
+    &.DEAD {
+      background: lighten($color: lightsalmon , $amount: 20);
+    }
+    
+    &.ONLINE, &.online {
+      background: lighten($color: lightgreen , $amount: 16);
+    }    
   }
 }
 
