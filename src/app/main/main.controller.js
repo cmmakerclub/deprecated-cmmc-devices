@@ -14,28 +14,61 @@
       var MQTT = mqttwsProvider(options);
       return MQTT;
     })
+    .factory("mqttXYZ", function (mqttwsProvider) {
+      options.host = "cmmc.xyz";
+      options.port = 9001;
+      var MQTT = mqttwsProvider(options);
+      return MQTT;
+    })
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($scope, $timeout, toastr, myMqtt, mqttLWT) {
+  function MainController($scope, $timeout, toastr,
+    myMqtt, mqttXYZ, mqttLWT) {
     var vm = this;
     vm.devices = {};
+    vm.LWT = {};
 
 
-    myMqtt.on("message", function (topic, payload, message) {
+    var onMsg = function (topic, payload, message) {
       // console.log("topic", topic, payload);
-      var payload = JSON.parse(payload);
-      vm.devices[payload.d.id] = payload;
-      vm.devices[payload.info && payload.info.id] = payload;
-      delete vm.devices.undefined
+      var _payload = JSON.parse(payload);
+      var _id2 = _payload.info && _payload.info.id;
+      var _id = _payload.d && _payload.d.id;
+      vm.devices[_id || _id2] = _payload;
+      vm.devices[_id || _id2].status = vm.LWT[_id] || "UNKNOWN";
+      delete vm.devices.undefined;
       $scope.$apply();
+    };
+    
+    $scope.$watch
+
+    myMqtt.on("message", onMsg);
+    mqttXYZ.on("message", onMsg);
+    mqttLWT.on("message", function (topic, payload) {
+      var topics = topic.split("/");
+      var values = payload.split("|");
+      var status = values[0];
+      var id = values[1];
+      var mac = topics[1];
+
+
+      
+      // console.log(mac, values[0]);
+      if (mac && mac == status) {
+        status = "online";
+      }
+      
+      vm.LWT[mac || id] = status;
+      $scope.$apply();
+      
     });
+    
+    //asynchronously 
+    mqttLWT.connect().then(mqttLWT.subscribe("esp8266/+/online"));
+    // myMqtt.connect().then(myMqtt.subscribe("esp8266/+/status"));
+    mqttXYZ.connect().then(mqttXYZ.subscribe("esp8266/+/status"));
 
-    // myMqtt.on("esp8266/+/status", function (payload, message) {
-    //   console.log("ON STATUS", JSON.parse(payload));
-    // });
-
-    myMqtt.connect().then(myMqtt.subscribe("esp8266/+/status"));
 
 
     vm.classAnimation = '';

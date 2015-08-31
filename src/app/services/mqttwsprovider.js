@@ -14,25 +14,21 @@ angular.module('gulpAngularMqttWs')
         this.$get = function ($q) {
             console.log("$get");
 
-            var host;
-            var port;
-            var useTLS = false;
-            var username = null;
-            var password = null;
-            var cleansession = true;
-
-            var mqtt;
-            var reconnectTimeout = 2000;
-            var events = {};
-
             return function socketFactory(options) {
-                console.log($q)
-                console.log("OPTIONS:", options);
+                var host;
+                var port;
+                var useTLS = false;
+                var username = null;
+                var password = null;
+                var cleansession = true;
+
+                var mqtt;
+                var reconnectTimeout = 2000;
+                var events = {};
 
                 var wrappedSocket = {
                     on: function (event, func) {
                         events[event] = func;
-                        console.log(event, events);
                     },
                     addListener: function () { },
                     subscribe: function (topic, opts) {
@@ -53,13 +49,11 @@ angular.module('gulpAngularMqttWs')
 
                         var onSuccess = function () {
                             var ev = events.connected || function () { };
-                            console.log("DEFAULT SUCCESS", arguments);
                             ev.call(null, arguments);
                             defer.resolve(arguments);
                         }
 
                         var onFailure = function (message) {
-                            console.log("failed");
                             setTimeout(MQTTconnect, reconnectTimeout);
                         }
 
@@ -95,7 +89,6 @@ angular.module('gulpAngularMqttWs')
                     }
                 };
 
-                console.log("mqttwsProvider execute");
                 options = options || {};
 
                 host = options.host;
