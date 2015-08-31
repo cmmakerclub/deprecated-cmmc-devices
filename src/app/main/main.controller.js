@@ -29,7 +29,7 @@
     vm.devices = {};
     vm.LWT = {};
 
-    var onMsg = function (topic, payload, message) {
+    var onMsg = function (topic, payload) {
       // console.log("topic", topic, payload);
       var _payload = JSON.parse(payload);
       var _id2 = _payload.info && _payload.info.id;
@@ -50,7 +50,7 @@
       var id = values[1];
       var mac = topics[1];
       
-      if (mac && mac == status) {
+      if (mac && mac === status) {
         status = "online";
       }
       

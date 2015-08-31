@@ -9,10 +9,10 @@
  */
 angular.module('gulpAngularMqttWs')
     .provider('mqttwsProvider', function () {
-        console.log("mqttwsProvider")
+        // console.log("mqttwsProvider")
         // Method for instantiating
-        this.$get = function ($q) {
-            console.log("$get");
+        this.$get = function ($q, $windows) {
+            // console.log("$get");
 
             return function socketFactory(options) {
                 var host;
@@ -21,7 +21,6 @@ angular.module('gulpAngularMqttWs')
                 var username = null;
                 var password = null;
                 var cleansession = true;
-
                 var mqtt;
                 var reconnectTimeout = 2000;
                 var events = {};
@@ -32,30 +31,30 @@ angular.module('gulpAngularMqttWs')
                     },
                     addListener: function () { },
                     subscribe: function (topic, opts) {
-                        var opts = opts || { qos: 0 }
+                        opts = opts || { qos: 0 };
                         return function _subscribe() {
                             var defer = $q.defer();
                             var subscribed = function () {
                                 defer.resolve(mqtt);
-                            }
+                            };
 
                             opts.onSuccess = subscribed;
                             mqtt.subscribe(topic, opts);
                             return defer.promise;
-                        }
+                        };
                     },
                     connect: function () {
-                        var defer = $q.defer()
+                        var defer = $q.defer();
 
                         var onSuccess = function () {
                             var ev = events.connected || function () { };
                             ev.call(null, arguments);
                             defer.resolve(arguments);
-                        }
+                        };
 
                         var onFailure = function (message) {
-                            setTimeout(MQTTconnect, reconnectTimeout);
-                        }
+                            $windows.setTimeout(wrappedSocket.connect, reconnectTimeout);
+                        };
 
                         var options = {
                             timeout: 3,
@@ -65,7 +64,7 @@ angular.module('gulpAngularMqttWs')
                             onFailure: onFailure
                         };
 
-                        if (username != null) {
+                        if (username !== null) {
                             options.userName = username;
                             options.password = password;
                         }
@@ -82,8 +81,7 @@ angular.module('gulpAngularMqttWs')
                             // console.log("EV", ev);
                             // console.log("EV2", ev2);
                             ev2.apply(null, [payload, message]);
-
-                        }
+                        };
 
                         return defer.promise;
                     }
@@ -96,7 +94,7 @@ angular.module('gulpAngularMqttWs')
 
                 mqtt = new Paho.MQTT.Client(host, port, "web_" + parseInt(Math.random() * 100, 10));
 
-                var callback = options.callback;
+                // var callback = options.callback;
 
 
                 return wrappedSocket;
