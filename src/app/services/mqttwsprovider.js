@@ -11,7 +11,7 @@ angular.module('gulpAngularMqttWs')
     .provider('mqttwsProvider', function () {
         // console.log("mqttwsProvider")
         // Method for instantiating
-        this.$get = function ($q, $windows) {
+        this.$get = function ($q, $window) {
             // console.log("$get");
 
             return function socketFactory(options) {
@@ -53,7 +53,7 @@ angular.module('gulpAngularMqttWs')
                         };
 
                         var onFailure = function (message) {
-                            $windows.setTimeout(wrappedSocket.connect, reconnectTimeout);
+                            $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
                         };
 
                         var options = {
