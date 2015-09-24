@@ -1,27 +1,98 @@
-<div layout="vertical" layout-fill>
+<div layout="column" layout-fill class="nat-wrapper">
   <!--<md-toolbar layout="row" layout-align="space-around center">-->
-  <md-content>
+  <md-content layout-padding>
     <header>
       <acme-navbar creationDate="main.creationDate" />
     </header>
 
+
     <section class="jumbotron">
+
+
+      <div layout="row" layout-align="end center">
+
+        <md-input-container>
+          <label>Filter by name</label>
+          <input ng-model="filterDevice.name">
+        </md-input-container>
+
+        <md-input-container>
+          <label>Status</label>
+          <md-select name="onlineStatus" ng-model="onlineStatus" required>
+            <md-optgroup label="Status">
+              <md-option value="ALL">All</md-option>
+              <md-option value="ONLINE">Online</md-option>
+              <md-option value="DEAD">Offline</md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-button ng-click="toggleRight()" class="md-primary">
+          Config
+        </md-button>
+      </div>
       <div class="techs" layout-align="center">
-        <md-card ng-class="device.status" ng-repeat="device in main.devices | orderBy:'device.d.myName'">
+        <md-card ng-class="device.status" ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
           <div class="thumbnail">
             <!--<img class="pull-right" ng-src="assets/images/{{ device.logo }}" alt="{{ device.title }}">-->
             <div class="caption">
               <h3>{{ device.d.myName }} - {{ device.status }}</h3>
-              <p>{{ device.info.id || device.d.id }}</p>
-              <p>{{ device.d.seconds }} ({{ device.d.subscription }})</p>
-              <p>{{ device.info.sensor || device.d.sensor || "?" }}</p>
-              <p ng-show="{{device.online}}">esp8266/{{ device.info.id || device.d.id }}/status</p>
-              <!--<p>esp8266/{{ device.info.id || device.d.id }}/command</p>                            -->
-              <p><a ng-href="{{ device.url }}">{{ device.url }}</a></p>
+              <div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>
+              <div>{{ device.d.ip }}</div>
+              <div>{{ device.d.seconds }} ({{ device.d.subscription }})</div>
+              <div>{{ device.info.sensor || device.d.sensor || "?" }}</div>
+              <div ng-show="{{device.online}}">{{ device.info.id || device.d.id }}/status</div>
+              <!--<div>esp8266/{{ device.info.id || device.d.id }}/command</div>                            -->
             </div>
           </div>
+          <div class="md-actions" layout="row" layout-align="end center">
+            <md-button ng-click="showDetail($event, key)">Detail</md-button>
+          </div>
         </md-card>
+
       </div>
+    </section>
+
+    <section>
+      <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right" layout-align="start center">
+        <md-toolbar class="md-theme-light" layout="row" layout-align="center center">
+          Config
+        </md-toolbar>
+        <md-content layout-padding class="autoScroll">
+          <md-input-container>
+            
+            <label>Host</label>
+            <input ng-model="config.host">
+          </md-input-container>
+          
+          <md-input-container>
+            <label>Port</label>
+            <input ng-model="config.port">
+          </md-input-container>
+          
+          <md-input-container>
+            <label>Username</label>
+            <input ng-model="config.username">
+          </md-input-container>
+          
+          <md-input-container>
+            <label>Password</label>
+            <input ng-model="config.password" type="password">
+          </md-input-container>
+
+          <md-input-container>
+            <label>clientId</label>
+            <input ng-model="config.clientId" type="clientId">
+          </md-input-container>          
+
+          <md-input-container>
+            <md-button class="md-raised" ng-click="save()">Save</md-button>
+          </md-input-container>
+          <md-input-container>
+            <md-button class="md-raised md-warn" ng-click="cancel()">Cancel</md-button>
+          </md-input-container>
+        </md-content>
+
+      </md-sidenav>
     </section>
   </md-content>
 
