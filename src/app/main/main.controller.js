@@ -1,9 +1,10 @@
 (function () {
   'use strict';
+  var pre_options = { };
   angular
     .module('gulpAngularMqttWs')
     .factory("myMqtt", function (mqttwsProvider) {
-      var MQTT = mqttwsProvider(options);
+      var MQTT = mqttwsProvider(pre_options);
       return MQTT;
     })
     .controller('MainController', MainController);
@@ -55,6 +56,7 @@
         // var _id = _id + Math.random();
         _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
         _payload.online = _payload.status !== "DEAD";
+
         vm.devices[_id || _id2] = _payload;
         delete vm.devices.undefined;
         $scope.$apply();
@@ -120,18 +122,20 @@
       // myMqtt.connect($scope.config).then(myMqtt.subscribe("esp8266/+/status"));
       // mqttXYZ.connect($scope.config).then(mqttXYZ.subscribe("esp8266/+/status"));
       $scope.config = {
-        host: 'cmmc.xyz',
-        port: 9001,
+        // host: 'cmmc.xyz',
+        // port: 9001,
         // clientId
-        // username: "2syAvlZPSExXY3M%1443015923",
-        // password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
+        host: 'gearbroker.netpie.io',
+        port: 8083,
+        username: "2syAvlZPSExXY3M%1443015923",
+        password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
         clientId: "pX1LPwvk6iETiP2Y"
       };
       myMqtt.create($scope.config)
       .then(myMqtt.connect())
       .then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"))
-      .then(myMqtt.subscribe("/HelloChiangMaiMakerClub/#"))
-      .then(myMqtt.subscribe("esp8266/+/status"))
+      // .then(myMqtt.subscribe("/HelloChiangMaiMakerClub/#"))
+      // .then(myMqtt.subscribe("esp8266/+/status"))
       .then(function() { console.log("ALL DONE"); });
     }
 
