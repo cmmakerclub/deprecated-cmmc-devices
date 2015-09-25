@@ -47,6 +47,7 @@
 
     var addListener = function () {
       var onMsg = function (topic, payload) {
+        console.log(topic, payload);
         // console.log("topic", topic, payload);
         var _payload = JSON.parse(payload);
         var _id2 = _payload.info && _payload.info.id;

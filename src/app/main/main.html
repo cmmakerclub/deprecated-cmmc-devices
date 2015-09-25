@@ -80,15 +80,19 @@
 
           <md-input-container ng-show="data.cb_clientId">
             <label>clientId</label>
-            <input ng-model="config.clientId" type="clientId">
+            <input ng-model="config.clientId">
           </md-input-container>          
+
+          <md-input-container>
+            <label>subcribe to</label>
+            <input ng-model="config.topic_sub">
+          </md-input-container>
 
          <md-checkbox
             ng-init="data.cb_auth=false"
             ng-model="data.cb_auth"
             aria-label="Checkbox 2"
             class="md-warn md-align-top-left">
-              <!-- {{ data.cb_auth }} -->
               username & password
         </md-checkbox>
 
@@ -98,6 +102,13 @@
             class="md-warn md-align-top-left">
               <!-- {{ data.cb_clientId }} -->
               clientId
+        </md-checkbox>
+
+         <md-checkbox
+            ng-model="data.cb_convention_sub"
+            aria-label="Checkbox 2"
+            class="md-warn md-align-top-left">
+              convention topics
         </md-checkbox>
 
           <md-input-container>
