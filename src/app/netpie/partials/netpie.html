@@ -6,7 +6,7 @@
     </header>
     </md>
 
-    <md-button md-no-ink class="md-primary" ng-click="addApp = true">New App</md-button>
+    <md-button class="md-primary" ng-click="addApp = true">New App</md-button>
 
     <md-button ng-click="toggleRight()" class="md-primary">
       Config
@@ -99,7 +99,20 @@
     <sidebar-netpie-config config="config.netpie" />
     <!--{{ storage }}-->
 
-    {{ config }}
+    <section>
+      {{config}}
+      <md-button ng-click="toggleRight()" class="md-primary">
+        Config
+      </md-button>
+      <sidebar-netpie-config config="config.netpie" />
+    </section>
+
+    <section>
+      Hello
+    </section>
+
+    <!--{{ storage }}-->
+    <!-- {{ config }} -->
 
     <a href="#" ng-click="getMqttPass()">NETPIE </a>
     <code width="80%">{{ Object.keys(data) }}</code>
