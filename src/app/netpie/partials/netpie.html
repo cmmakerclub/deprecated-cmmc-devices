@@ -1,0 +1,19 @@
+<div layout="column" layout-fill class="nat-wrapper">
+  <!--<md-toolbar layout="row" layout-align="space-around center">-->
+  <md-content layout-padding>
+    <header>
+      <acme-navbar creationDate="main.creationDate" />
+    </header>
+    </md>
+
+
+    <md-button ng-click="toggleRight()" class="md-primary">
+      Config
+    </md-button>
+    <sidebar-netpie-config config="config.netpie" />
+    <!--{{ storage }}-->
+    {{ config }}
+
+    <a href="#" ng-click="getMqttPass()">NETPIE </a>
+    <code width="80%">{{ Object.keys(data) }}</code>
+</div>

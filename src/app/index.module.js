@@ -2,5 +2,6 @@
   'use strict';
 
   angular
-    .module('gulpAngularMqttWs', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ui.router', 'ngMaterial', 'ngStorage']);
+    .module('gulpAngularMqttWs', ['ngAnimate', 'ngCookies', 'ngTouch', 
+    	'ngSanitize', 'ui.router', 'ngMaterial', 'ngStorage']);
 })();

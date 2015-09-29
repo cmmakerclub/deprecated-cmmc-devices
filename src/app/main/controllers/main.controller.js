@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  var pre_options = { };
+  var pre_options = {};
   angular
     .module('gulpAngularMqttWs')
     .factory("myMqtt", function (mqttwsProvider) {
@@ -10,7 +10,8 @@
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($scope, $timeout, myMqtt, $localStorage, $sessionStorage, $mdSidenav, $mdUtil, $mdDialog) {
+  function MainController($scope, $timeout, myMqtt, $localStorage,
+    $sessionStorage, $mdSidenav, $mdUtil, $mdDialog) {
     var vm = this;
     vm.devices = {};
     vm.LWT = {};
@@ -20,11 +21,13 @@
         $mdSidenav(navID)
           .toggle()
           .then(function () {
-            console.log("toggle " + navID + " is done") ;
+            console.log("toggle " + navID + " is done");
           });
       }, 200);
       return debounceFn;
     }
+
+    $scope.toggleRight = buildToggler('right');
 
     // load config
     $scope.storage = $localStorage.$default({
@@ -37,7 +40,6 @@
       }
     });
 
-    $scope.toggleRight = buildToggler('right');
 
     $scope.config = $scope.storage.config;
 
@@ -87,7 +89,7 @@
     $scope.showDetail = function (ev, deviceUUIDuuid) {
       $mdDialog.show({
         controller: DialogController,
-        templateUrl: 'app/main/detail.html',
+        templateUrl: 'app/main/partials/detail.html',
         parent: angular.element(document.body),
         targetEvent: ev,
         clickOutsideToClose: true,
@@ -96,11 +98,11 @@
           devices: $scope.allDevices
         },
       })
-      .then(function (answer) {
-        $scope.status = 'You said the information was "' + answer + '".';
-      }, function () {
-        $scope.status = 'You cancelled the dialog.';
-      });
+        .then(function (answer) {
+          $scope.status = 'You said the information was "' + answer + '".';
+        }, function () {
+          $scope.status = 'You cancelled the dialog.';
+        });
     };
 
     var remmoveDevices = function () {
@@ -131,12 +133,13 @@
         password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
         clientId: "pX1LPwvk6iETiP2Y"
       };
+
       myMqtt.create($scope.config)
-      .then(myMqtt.connect())
-      .then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"))
+        .then(myMqtt.connect())
+        .then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"))
       // .then(myMqtt.subscribe("/HelloChiangMaiMakerClub/#"))
       // .then(myMqtt.subscribe("esp8266/+/status"))
-      .then(function() { console.log("ALL DONE"); });
+        .then(function () { console.log("ALL DONE"); });
     }
 
     $scope.disconnect = function () {
