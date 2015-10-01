@@ -4,33 +4,33 @@
       Config
     </md-toolbar>
     <md-content layout-padding class="autoScroll">
-      <md-input-container>
-        <label>Host</label>
-        <input ng-model="config.host">
-      </md-input-container>
+      <form ng-submit="closeAndSaveNewConfig(config)">
+        <md-input-container>
+          <label>Host</label>
+          <input ng-model="config.host" required>
+        </md-input-container>
 
-      <md-input-container>
-        <label>Port</label>
-        <input ng-model="config.port">
-      </md-input-container>
+        <md-input-container>
+          <label>Port</label>
+          <input ng-model="config.port" required>
+        </md-input-container>
 
-      <md-input-container ng-show="data.cb_auth">
-        <label>Username</label>
-        <input ng-model="config.username">
-      </md-input-container>
+        <md-input-container ng-show="data.cb_auth">
+          <label>Username</label>
+          <input ng-model="config.username">
+        </md-input-container>
 
-      <md-input-container ng-show="data.cb_auth">
-        <label>Password</label>
-        <input ng-model="config.password" type="password">
-      </md-input-container>
+        <md-input-container ng-show="data.cb_auth">
+          <label>Password</label>
+          <input ng-model="config.password" type="password">
+        </md-input-container>
 
-      <md-input-container ng-show="data.cb_clientId">
-        <label>clientId</label>
-        <input ng-model="config.clientId" type="clientId">
-      </md-input-container>
+        <md-input-container ng-show="data.cb_clientId">
+          <label>clientId</label>
+          <input ng-model="config.clientId" type="clientId" required>
+        </md-input-container>
 
-      <div>
-        < <md-checkbox ng-init="data.cb_auth=false" ng-model="data.cb_auth" aria-label="Checkbox 2" class="md-warn md-align-top-left">
+        <md-checkbox ng-init="data.cb_auth=false" ng-model="data.cb_auth" aria-label="Checkbox 2" class="md-warn md-align-top-left">
           <!-- {{ data.cb_auth }} -->
           username & password
           </md-checkbox>
@@ -41,11 +41,12 @@
           </md-checkbox>
 
           <md-input-container>
-            <md-button class="md-raised" ng-click="save()">Save</md-button>
+            <md-button class="md-raised">Save</md-button>
           </md-input-container>
-          <md-input-container>
-            <md-button class="md-raised md-warn" ng-click="cancel()">Cancel</md-button>
-          </md-input-container>
+        </form>
+        <md-input-container>
+          <md-button class="md-raised md-warn" ng-click="closeNav()">Cancel</md-button>
+        </md-input-container>
     </md-content>
 
   </md-sidenav>

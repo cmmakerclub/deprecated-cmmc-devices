@@ -17,7 +17,9 @@
     vm.LWT = {};
 
     var buildToggler = function buildToggler(navID) {
+
       var debounceFn = $mdUtil.debounce(function () {
+
         $mdSidenav(navID)
           .toggle()
           .then(function () {
@@ -32,16 +34,31 @@
     // load config
     $scope.storage = $localStorage.$default({
       config: {
-        host: 'gearbroker.netpie.io',
-        port: 8083,
-        username: "BZXrhDBMKutYd68%1443014670",
-        password: "i4jmEZaflGYzXxxi2g5byEM5VA4=",
-        clientId: "eqSZOmyJ2oXN4CJs"
+        // host: 'gearbroker.netpie.io',
+        // port: 8083,
+        // username: "BZXrhDBMKutYd68%1443014670",
+        // password: "i4jmEZaflGYzXxxi2g5byEM5VA4=",
+        // clientId: "eqSZOmyJ2oXN4CJs"
       }
     });
 
+    $scope.closeNav = function () {
+      $mdSidenav('right').close()
+        .then(function () {
+          $scope.config = angular.extend({}, $scope.storage.config);
+        });
+    };
 
-    $scope.config = $scope.storage.config;
+    $scope.closeAndSaveNewConfig = function (newConfig) {
+
+      $mdSidenav('right').close()
+        .then(function () {
+          $scope.storage.config = newConfig;
+          $scope.connect();
+        });
+    };
+
+    $scope.config = angular.extend({}, $scope.storage.config);
 
     $scope.onlineStatus = "ALL";
     $scope.filterDevice = {};
@@ -98,11 +115,46 @@
           devices: $scope.allDevices
         },
       })
-        .then(function (answer) {
-          $scope.status = 'You said the information was "' + answer + '".';
+        .then(function () {
         }, function () {
           $scope.status = 'You cancelled the dialog.';
         });
+    };
+
+    var isFirstLogin = function () {
+
+      if ($scope.config.host != null && $scope.config.host != "") {
+        return false;
+      }
+      else {
+        return true;
+      }
+
+    }
+
+    $scope.showFirstPopup = function (ev) {
+
+      if (!isFirstLogin()) {
+        return;
+      }
+
+      $mdDialog.show({
+        controller: FirstPopupDialogController,
+        templateUrl: 'app/main/partials/firstPopup.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose: false,
+      })
+      .then(function (newConfig) {
+
+        $scope.config = newConfig;
+        $scope.storage.config = newConfig;
+        $mdSidenav('right').open();
+
+      }, function () {
+        $scope.connect();
+      });
+
     };
 
     var remmoveDevices = function () {
@@ -123,16 +175,22 @@
       // myMqtt.connect($scope.config).then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"));
       // myMqtt.connect($scope.config).then(myMqtt.subscribe("esp8266/+/status"));
       // mqttXYZ.connect($scope.config).then(mqttXYZ.subscribe("esp8266/+/status"));
-      $scope.config = {
-        // host: 'cmmc.xyz',
-        // port: 9001,
-        // clientId
-        host: 'gearbroker.netpie.io',
-        port: 8083,
-        username: "2syAvlZPSExXY3M%1443015923",
-        password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
-        clientId: "pX1LPwvk6iETiP2Y"
-      };
+      // $scope.config = {
+      //   // host: 'cmmc.xyz',
+      //   // port: 9001,
+      //   // clientId
+      //   host: 'gearbroker.netpie.io',
+      //   port: 8083,
+      //   // username: "2syAvlZPSExXY3M%1443015923",
+      //   // password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
+      //   // clientId: "pX1LPwvk6iETiP2Y"
+      // };
+
+      angular.forEach($scope.config, function (value, key) {
+        if ($scope.config[key] == "") {
+          delete $scope.config[key];
+        }
+      })
 
       myMqtt.create($scope.config)
         .then(myMqtt.connect())
@@ -152,18 +210,30 @@
       $scope.devices = devices;
       $scope.deviceUUID = deviceUUID;
 
-      $scope.hide = function () {
-        $mdDialog.hide();
+      $scope.hide = function (config) {
+        $mdDialog.hide(config);
       };
       $scope.cancel = function () {
         $mdDialog.cancel();
       };
-      $scope.answer = function (answer) {
-        $mdDialog.hide(answer);
+
+    }
+
+    function FirstPopupDialogController($scope, $mdDialog) {
+
+      $scope.config = {
+        host: 'gearbroker.netpie.io',
+        port: 8083,
+      };
+
+      $scope.save = function (newConfig) {
+        $mdDialog.hide(newConfig);
       };
     }
 
-    $scope.connect();
+    if (!isFirstLogin()) {
+      $scope.connect();
+    }
 
   }
 })();
