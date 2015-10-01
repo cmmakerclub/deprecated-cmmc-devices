@@ -50,7 +50,7 @@ angular.module('gulpAngularMqttWs')
 
     $scope.getMqttPass = function (newApp) {
       console.log("GETTING MQTT AUTH");
-      var str = "http://netpie-api.herokuapp.com/api/"
+      var str = "https://netpie-api.herokuapp.com/api/"
       str += newApp.appKey + "/";
       str += newApp.appSecret + "/";
       str += newApp.appId;

@@ -15,21 +15,21 @@
     <form name="app" style="width:70%" ng-show="addApp" ng-submit="loading = true; getMqttPass(newApp)">
       <md-input-container flex>
         <label>AppID</label>
-        <input required ng-model="newApp.appId" name="appId"/>
+        <input required ng-model="newApp.appId" name="appId" />
         <div ng-messages="app.appId.$error">
           <div ng-message="required">This is required.</div>
         </div>
       </md-input-container>
       <md-input-container flex>
         <label>App Key</label>
-        <input required  name="appKey" ng-model="newApp.appKey"/>
+        <input required name="appKey" ng-model="newApp.appKey" />
         <div ng-messages="app.appKey.$error">
           <div ng-message="required">This is required.</div>
         </div>
       </md-input-container>
       <md-input-container flex>
         <label>App Secret</label>
-        <input required  name="appSecret" ng-model="newApp.appSecret">
+        <input required name="appSecret" ng-model="newApp.appSecret">
         <div ng-messages="app.appSecret.$error">
           <div ng-message="required">This is required.</div>
         </div>
@@ -45,56 +45,63 @@
     </form>
 
 
-    <md-content class="md-padding">
-      <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
-        <md-tab ng-repeat="app in storage.netpieApp"
-                label="{{app.appId}}">
+
+<div>
+  <md-content class="md-padding">
+    
+      <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height >
+        <md-tab ng-repeat="app in storage.netpieApp" label="{{app.appId}}">
           <div class="tab{{$index%4}}">
 
             <md-toolbar class="md-theme-light">
               App overview
             </md-toolbar>
 
-            <md-content>
+            <md-content layout-fill>
               <md-list>
+                <md-subheader class="md-no-sticky">MASTER</md-subheader>
+
                 <md-list-item class="md-3-line">
-                  <div class="md-list-item-text">
+                  <md-card class="md-list-item-text">
                     <div>Id : {{ app.appId }}</div>
                     <div>Key : {{ app.appKey }}</div>
                     <div>Secret : {{ app.appSecret }}</div>
-                  </div>
+                  </md-card>
                 </md-list-item>
               </md-list>
             </md-content>
 
             <md-toolbar class="md-theme-light">
-              
-              <div>
-                Microgear list 
-                <md-button class="md-fab md-mini" aria-label="Eat cake" ng-click="getMqttPass(app)">
-                  Add
-                </md-button>
-              </div>
+
+              <md-subheader class="md-no-sticky">MICRO GEARS</md-subheader>
+              <md-button class="md-fab md-mini" aria-label="Eat cake" ng-click="getMqttPass(app)"> Add </md-button>
+
             </md-toolbar>
 
             <md-content>
-              <md-list>
-                <md-list-item class="md-3-line" ng-repeat="microgear in app.microgears">
-                  <div class="md-list-item-text" layout="column">
-                    <div>Username : {{ microgear.username }}</div>
-                    <div>Password : {{ microgear.password }}</div>
-                    <div>Client Id : {{ microgear.clientId }}</div>
-                    </div>
-                    <md-button class="md-raised" ng-click="setGear(microgear)">
-                      Use this Gear
-                    </md-button>
-                </md-list-item>
+              <md-list-item class="md-3-line" ng-repeat="microgear in app.microgears">
+                <md-card class="md-list-item-text" layout="column">
+                  <div> #define MQTT_USERNAME&nbsp; &nbsp; &nbsp; {{microgear.username}} </div>
+                  <div> #define MQTT_PASSWORD&nbsp; &nbsp; &nbsp; {{microgear.password}}</div>
+                  <div> #define MQTT_CLIENT_ID&nbsp; &nbsp; &nbsp; &nbsp; {{microgear.clientId}} </div>
+                  <div> #define MQTT_PREFIX&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "/HelloChiangMaiMakerClub/gearname" </div>
+
+                </md-card>
+                <md-button class="md-raised" ng-click="setGear(microgear)">
+                  Use this Gear
+                </md-button>
+              </md-list-item>
               </md-list>
             </md-content>
           </div>
         </md-tab>
       </md-tabs>
+  </md-content>
+</div>
+
+
     </md-content>
+
 
     <sidebar-netpie-config config="config.netpie" />
     <!--{{ storage }}-->
