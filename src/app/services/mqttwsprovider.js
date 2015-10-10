@@ -9,19 +9,22 @@
  */
 angular.module('gulpAngularMqttWs')
     .provider('mqttwsProvider', function () {
-        // console.log("mqttwsProvider")
+        // $log.debug("mqttwsProvider")
         // Method for instantiating
-        this.$get = function ($q, $window) {
-            // console.log("$get");
-
+        this.$get = function ($q, $window, $log) {
+            // $log.debug("$get");
+            var genClientId = function(str){
+                var time = new Date();
+                return str + '.' + time.getTime();
+            };
             return function socketFactory(pre_options) {
                 var host;
                 var port;
-                var useTLS = false;
+                var useTLS = true;
                 var username = null;
                 var password = null;
                 var cleansession = false;
-                var mqtt;
+                var mqttClient;
                 var reconnectTimeout = 2000;
                 var events = {};
                 var _options = {};
@@ -38,13 +41,13 @@ angular.module('gulpAngularMqttWs')
                         return function _subscribe() {
                             var defer = $q.defer();
                             var subscribed = function () {
-                                defer.resolve(mqtt);
+                                defer.resolve(mqttClient);
                             };
 
                             opts.onSuccess = subscribed;
-                            mqtt.subscribe(topic, opts);
+                            mqttClient.subscribe(topic, opts);
 
-                            console.log("SUB", topic, opts);
+                            $log.debug("SUB", topic, opts);
                             return defer.promise;
                         };
                     },
@@ -53,9 +56,12 @@ angular.module('gulpAngularMqttWs')
                         options = angular.extend(_options, options);
                         host = options.host;
                         port = parseInt(options.port, 10);
-                        console.log("CRESATE", options);
-                        mqtt = new Paho.MQTT.Client(host, port, options.clientId);
-                        defer.resolve(mqtt);
+                        $log.debug("CRESATE", options);
+                        if (!options.clientId) {
+                            options.clientId = genClientId("RANDOM");
+                        }
+                        mqttClient = new Paho.MQTT.Client(host, port, options.clientId);
+                        defer.resolve(mqttClient);
                         return defer.promise;
                     },
                     connect: function () {
@@ -64,13 +70,13 @@ angular.module('gulpAngularMqttWs')
 
                             var onSuccess = function () {
                                 var ev = events.connected || function () { };
-                                console.log("CONNECTED");
+                                $log.debug("CONNECTED");
                                 ev.call(null, arguments);
                                 defer.resolve(arguments);
                             };
 
                             var onFailure = function (message) {
-                                console.log(message);
+                                $log.debug(message);
                                 // $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
                                 defer.reject(message);
                             };
@@ -86,15 +92,15 @@ angular.module('gulpAngularMqttWs')
                             };
 
 
-                            console.log(_options)
+                            $log.debug("OPTIONS", _options)
                             if (!!_options.username) {
                                 options.userName = _options.username;
                                 options.password = _options.password;
                             }
 
-                            mqtt.connect(options);
+                            mqttClient.connect(options);
 
-                            mqtt.onMessageArrived = function (message) {
+                            mqttClient.onMessageArrived = function (message) {
                                 var topic = message.destinationName;
                                 var payload = message.payloadString;
                                 var ev = events.message || function () { };
