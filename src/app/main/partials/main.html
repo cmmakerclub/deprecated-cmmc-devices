@@ -32,6 +32,7 @@
         <sidebar-mqtt-config />
       </div>
 
+      {{ status }}
       <div class="techs" layout-align="center">
         <md-card ng-class="device.status" ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
           <div class="thumbnail">

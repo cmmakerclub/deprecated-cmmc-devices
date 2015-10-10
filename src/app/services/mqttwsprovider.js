@@ -37,17 +37,19 @@ angular.module('gulpAngularMqttWs')
                         events[event] = func;
                     },                    
                     subscribe: function (topic, opts) {
+                        $log.debug("SUBSCRIBE", arguments);
                         opts = opts || { qos: 0 };
                         return function _subscribe() {
                             var defer = $q.defer();
                             var subscribed = function () {
+                                $log.debug("PROVIDER", "subscribe succeeded.")
                                 defer.resolve(mqttClient);
                             };
 
                             opts.onSuccess = subscribed;
                             mqttClient.subscribe(topic, opts);
 
-                            $log.debug("SUB", topic, opts);
+                            $log.debug("PROVIDER", "SUB", topic, opts);
                             return defer.promise;
                         };
                     },
@@ -56,9 +58,10 @@ angular.module('gulpAngularMqttWs')
                         options = angular.extend(_options, options);
                         host = options.host;
                         port = parseInt(options.port, 10);
-                        $log.debug("CRESATE", options);
+                        $log.debug("CREATE", options);
                         if (!options.clientId) {
                             options.clientId = genClientId("RANDOM");
+                            $log.debug("PROVIDER"," clientId = ", options.clientId);
                         }
                         mqttClient = new Paho.MQTT.Client(host, port, options.clientId);
                         defer.resolve(mqttClient);
@@ -70,7 +73,7 @@ angular.module('gulpAngularMqttWs')
 
                             var onSuccess = function () {
                                 var ev = events.connected || function () { };
-                                $log.debug("CONNECTED");
+                                $log.debug("PROVIDER", "CONNECTION CONNECTED");
                                 ev.call(null, arguments);
                                 defer.resolve(arguments);
                             };
@@ -91,8 +94,7 @@ angular.module('gulpAngularMqttWs')
                                 onFailure: onFailure
                             };
 
-
-                            $log.debug("OPTIONS", _options)
+                            $log.debug("PROVIDER", "OPTIONS", _options)
                             if (!!_options.username) {
                                 options.userName = _options.username;
                                 options.password = _options.password;
