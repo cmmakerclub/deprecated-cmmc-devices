@@ -20,7 +20,7 @@ angular.module('gulpAngularMqttWs')
             return function socketFactory(pre_options) {
                 var host;
                 var port;
-                var useTLS = true;
+                var useTLS = false;
                 var username = null;
                 var password = null;
                 var cleansession = false;

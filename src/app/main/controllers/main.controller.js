@@ -223,7 +223,7 @@
       };
 
       $scope.operations = {
-        "subscribe": myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"),
+        "subscribe": myMqtt.subscribe("/NatWeerawan/gearname/#"),
         "connect":  myMqtt.connect(),
         "config": $scope.config,
         "disconnect": angular.noop,
