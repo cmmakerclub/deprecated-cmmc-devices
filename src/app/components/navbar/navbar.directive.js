@@ -3,7 +3,7 @@
 
   angular
     .module('gulpAngularMqttWs')
-    .directive('acmeNavbar', acmeNavbar);
+    .directive('myNavBar', acmeNavbar);
 
   /** @ngInject */
   function acmeNavbar() {
@@ -23,7 +23,6 @@
     /** @ngInject */
     function NavbarController(moment) {
       var vm = this;
-
       // "vm.creation" is avaible by directive option "bindToController: true"
       vm.relativeDate = moment(vm.creationDate).fromNow();
     }

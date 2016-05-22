@@ -33,8 +33,8 @@
     // load config
     $scope.storage = $localStorage.$default({
       config: {
-        // host: 'gearbroker.netpie.io',
-        // port: 8083,
+        host: 'mqtt.espert.io',
+        port: 8000,
         // username: "BZXrhDBMKutYd68%1443014670",
         // password: "i4jmEZaflGYzXxxi2g5byEM5VA4=",
         // clientId: "eqSZOmyJ2oXN4CJs"
@@ -120,27 +120,7 @@
       };
 
       myMqtt.on("message", onMsg);
-      // mqttXYZ.on("message", onMsg);
-      // mqttLWT.on("message", function (topic, payload) {
-      //   var topics = topic.split("/");
-      //   var values = payload.split("|");
-      //   var status = values[0];
-      //   var id = values[1];
-      //   var mac = topics[1];
-
-      //   if (mac && mac === status) {
-      //     status = "online";
-      //   }
-
-      //   vm.LWT[mac || id] = status;
-      //   // vm.devices[mac || id] .status = status;
-      //   if (vm.devices[mac || id]) {
-      //     vm.devices[mac || id].status = status;
-      //     $log.info(vm);
-      //     $scope.$apply();
-      //   }
-      // });
-    }
+    };
 
     $scope.showDetail = function (ev, deviceUUIDuuid) {
       $mdDialog.show({
@@ -152,7 +132,7 @@
         locals: {
           deviceUUID: deviceUUIDuuid,
           devices: $scope.allDevices
-        },
+        }
       })
         .then(function () {
         }, function () {
@@ -162,18 +142,12 @@
     };
 
     var isFirstLogin = function () {
-
-      if ($scope.config.host != null && $scope.config.host != "") {
-        return false;
-      }
-      else {
-        return true;
-      }
-
-    }
+      var firstLogin =
+        (!$scope.config.host != null && $scope.config.host != "") == false;
+      return firstLogin;
+    };
 
     $scope.showFirstPopup = function (ev) {
-
       if (!isFirstLogin()) {
         return;
       }
@@ -183,14 +157,12 @@
         templateUrl: 'app/main/partials/firstPopup.html',
         parent: angular.element(document.body),
         targetEvent: ev,
-        clickOutsideToClose: false,
+        clickOutsideToClose: false
       })
         .then(function (newConfig) {
-
           $scope.config = newConfig;
           $scope.storage.config = newConfig;
           $mdSidenav('right').open();
-
         }, function () {
           $log.debug("CALLING CONNECT..");
           $scope.connect();
@@ -200,11 +172,11 @@
 
     var remmoveDevices = function () {
       vm.devices = {};
-    }
+    };
 
     $scope.allDevices = function () {
       return vm.devices;
-    }
+    };
 
     //asynchronously
     $scope.connect = function () {
@@ -212,21 +184,6 @@
 
       addListener();
       vm.devices = {};
-      // mqttLWT.connect($scope.config).then(mqttLWT.subscribe("/HelloChiangMaiMakerClub/gearname/#/status"));
-      // myMqtt.connect($scope.config).then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"));
-      // myMqtt.connect($scope.config).then(myMqtt.subscribe("esp8266/+/status"));
-      // mqttXYZ.connect($scope.config).then(mqttXYZ.subscribe("esp8266/+/status"));
-      // $scope.config = {
-      //   // host: 'cmmc.xyz',
-      //   // port: 9001,
-      //   // clientId
-      //   host: 'gearbroker.netpie.io',
-      //   port: 8083,
-      //   // username: "2syAvlZPSExXY3M%1443015923",
-      //   // password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
-      //   // clientId: "pX1LPwvk6iETiP2Y"
-      // };
-
       angular.forEach($scope.config, function (value, key) {
         if ($scope.config[key] == "") {
           delete $scope.config[key];
@@ -286,7 +243,7 @@
       // myMqtt.end(remmoveDevices);
       // mqttXYZ.end(remmoveDevices);
       $scope.operations.disconnect();
-    }
+    };
 
     function DialogController($scope, $mdDialog, deviceUUID, devices) {
       $scope.devices = devices;
@@ -305,7 +262,7 @@
 
       $scope.config = {
         host: 'mqtt.espert.io',
-        port: 8000,
+        port: 8000
       };
 
       $scope.save = function (newConfig) {

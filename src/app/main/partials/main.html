@@ -1,63 +1,61 @@
-<div layout="column" layout-fill class="nat-wrapper">
-  <!--<md-toolbar layout="row" layout-align="space-around center">-->
-  <md-content layout-padding>
-    <header>
-      <acme-navbar creationDate="main.creationDate" />
-    </header>
+<!--<md-toolbar layout="row" layout-align="space-around center">-->
+<md-content layout-fill>
+  <header>
+    <my-nav-bar creationDate="main.creationDate"/>
+  </header>
 
 
-    <section class="jumbotron">
+  <section class="jumbotron">
 
+    <div layout="row" layout-align="end center">
 
-      <div layout="row" layout-align="end center">
+      <md-input-container>
+        <label>Filter by name</label>
+        <input ng-model="filterDevice.name">
+      </md-input-container>
 
-        <md-input-container>
-          <label>Filter by name</label>
-          <input ng-model="filterDevice.name">
-        </md-input-container>
+      <md-input-container>
+        <label>Status</label>
+        <md-select name="onlineStatus" ng-model="onlineStatus" required>
+          <md-optgroup label="Status">
+            <md-option value="ALL">all</md-option>
+            <md-option value="ONLINE">online</md-option>
+            <md-option value="DEAD">offline</md-option>
+        </md-select>
+      </md-input-container>
 
-        <md-input-container>
-          <label>Status</label>
-          <md-select name="onlineStatus" ng-model="onlineStatus" required>
-            <md-optgroup label="Status">
-              <md-option value="ALL">All</md-option>
-              <md-option value="ONLINE">Online</md-option>
-              <md-option value="DEAD">Offline</md-option>
-          </md-select>
-        </md-input-container>
+      <md-button ng-click="toggleRight()" class="md-primary">
+        Config
+      </md-button>
+      <sidebar-mqtt-config/>
+    </div>
 
-        <md-button ng-click="toggleRight()" class="md-primary">
-          Config
-        </md-button>
-        <sidebar-mqtt-config />
-      </div>
-
-      {{ status }}
-      <div class="techs" layout-align="center">
-        <md-card ng-class="device.status" ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
-          <div class="thumbnail">
-            <!--<img class="pull-right" ng-src="assets/images/{{ device.logo }}" alt="{{ device.title }}">-->
-            <div class="caption">
-              <h3>{{ device.d.myName }} - {{ device.status }}</h3>
-              <div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>
-              <div>{{ device.d.ip }}</div>
-              <div>{{ device.d.seconds }} ({{ device.d.subscription }})</div>
-              <div>{{ device.info.sensor || device.d.sensor || "?" }}</div>
-              <div ng-show="{{device.online}}">{{ device.info.id || device.d.id }}/status</div>
-              <!--<div>esp8266/{{ device.info.id || device.d.id }}/command</div>                            -->
-            </div>
+    {{ status }}
+    <div class="techs" layout-align="center">
+      <md-card ng-class="device.status"
+               ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
+        <div class="thumbnail">
+          <!--<img class="pull-right" ng-src="assets/images/{{ device.logo }}" alt="{{ device.title }}">-->
+          <div class="caption">
+            <h3>{{ device.d.myName }} - {{ device.status }}</h3>
+            <div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>
+            <div>{{ device.d.ip }}</div>
+            <div>{{ device.d.seconds }} ({{ device.d.subscription }})</div>
+            <div>{{ device.info.sensor || device.d.sensor || "?" }}</div>
+            <div ng-show="{{device.online}}">{{ device.info.id || device.d.id }}/status</div>
+            <!--<div>esp8266/{{ device.info.id || device.d.id }}/command</div>                            -->
           </div>
-          <div class="md-actions" layout="row" layout-align="end center">
-            <md-button ng-click="showDetail($event, key)">Detail</md-button>
-          </div>
-        </md-card>
+        </div>
+        <div class="md-actions" layout="row" layout-align="end center">
+          <md-button ng-click="showDetail($event, key)">Detail</md-button>
+        </div>
+      </md-card>
 
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <div ng-init="showFirstPopup($event)"></div>
+  <div ng-init="showFirstPopup($event)"></div>
 
 
-  </md-content>
+</md-content>
 
-</div>
