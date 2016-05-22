@@ -6,4 +6,7 @@ git push
 pushd ..
 git commit -am "rebuild"
 git push
+
+rsync -avz dist/ root@cmmc.xyz:/var/www/html/devices/
 popd
+
