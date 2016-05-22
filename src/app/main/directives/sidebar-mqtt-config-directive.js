@@ -10,7 +10,7 @@ angular.module('gulpAngularMqttWs')
     return {
       templateUrl: 'app/main/partials/sidebar.html',
       restrict: 'E',
-      link: function(scope, element, attrs) {
+      link: function (scope, element, attrs) {
         // element.text('this is the sidebarMqttConfig directive');
       }
     };

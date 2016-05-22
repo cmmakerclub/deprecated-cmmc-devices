@@ -11,7 +11,7 @@
 
   /** @ngInject */
   function MainController($scope, $timeout, myMqtt, $localStorage,
-    $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
+                          $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
     var vm = this;
     vm.devices = {};
     vm.LWT = {};
@@ -19,7 +19,6 @@
     var buildToggler = function buildToggler(navID) {
 
       var debounceFn = $mdUtil.debounce(function () {
-
         $mdSidenav(navID)
           .toggle()
           .then(function () {
@@ -27,7 +26,7 @@
           });
       }, 200);
       return debounceFn;
-    }
+    };
 
     $scope.toggleRight = buildToggler('right');
 
@@ -66,21 +65,60 @@
     $scope.filterDevice.name = "";
 
     var addListener = function () {
+
       var onMsg = function (topic, payload) {
-        // $log.info("topic", topic, payload);
-        var _payload = JSON.parse(payload);
-        var _id2 = _payload.info && _payload.info.id;
-        var _id = _payload.d && _payload.d.id;
+        try {
+          var topics = topic.split("/");
+          // $log.debug(topics)
+          var max_depth = topics.length - 1;
 
+          var incomming_topic = topics[max_depth];
 
-        // var _id = _id + Math.random();
-        _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
-        _payload.online = _payload.status !== "DEAD";
+          if (incomming_topic == "online") {
+            $log.debug("online", topics);
+            var values = payload.split("|");
 
-        vm.devices[_id || _id2] = _payload;
-        delete vm.devices.undefined;
-        $scope.$apply();
+            var status = values[0];
+            var id = values[1];
+            var mac = values[1];
+            $log.debug('id', id, "mac", mac, "status", status, new Date());
+
+            if (mac && mac === status) {
+              status = "online";
+            }
+
+            vm.LWT[mac || id] = status;
+            // vm.devices[mac || id] .status = status;
+            if (vm.devices[mac || id]) {
+              vm.devices[mac || id].status = status;
+              $log.debug(vm);
+              $scope.$apply();
+            }
+          }
+          else {
+            try {
+              var _payload = JSON.parse(payload);
+              var _id2 = _payload.info && _payload.info.id;
+              var _id = _payload.d && _payload.d.id;
+              _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
+              _payload.online = _payload.status !== "DEAD";
+              vm.devices[_id || _id2] = _payload;
+              delete vm.devices.undefined;
+              $scope.$apply();
+            }
+            catch (exception) {
+              $log.debug("Exception: ");
+              $log.debug("=====", payload);
+            }
+          }
+        }
+        catch (ex) {
+          $log.debug("EXCEPTION!!!", ex);
+          $log.debug("EXCEPTION!!!", ex);
+          $log.debug("EXCEPTION!!!", ex);
+        }
       };
+
       myMqtt.on("message", onMsg);
       // mqttXYZ.on("message", onMsg);
       // mqttLWT.on("message", function (topic, payload) {
@@ -147,15 +185,16 @@
         targetEvent: ev,
         clickOutsideToClose: false,
       })
-      .then(function (newConfig) {
+        .then(function (newConfig) {
 
-        $scope.config = newConfig;
-        $scope.storage.config = newConfig;
-        $mdSidenav('right').open();
+          $scope.config = newConfig;
+          $scope.storage.config = newConfig;
+          $mdSidenav('right').open();
 
-      }, function () {
-        $scope.connect();
-      });
+        }, function () {
+          $log.debug("CALLING CONNECT..");
+          $scope.connect();
+        });
 
     };
 
@@ -173,7 +212,6 @@
 
       addListener();
       vm.devices = {};
-
       // mqttLWT.connect($scope.config).then(mqttLWT.subscribe("/HelloChiangMaiMakerClub/gearname/#/status"));
       // myMqtt.connect($scope.config).then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"));
       // myMqtt.connect($scope.config).then(myMqtt.subscribe("esp8266/+/status"));
@@ -193,58 +231,57 @@
         if ($scope.config[key] == "") {
           delete $scope.config[key];
         }
-      })
+      });
 
 
-      var genFailFn = function(type) {
-        var failFn = function(error) { 
+      var genFailFn = function (type) {
+        return function (error) {
           $scope.failed = true;
-          $log.error(type + " FAILED", error) 
+          $log.error(type + " FAILED", error);
           $scope.status = type + " FAILED = " + error.errorMessage;
         };
-        return failFn;
-      }
+      };
 
 
       var callbacks = {
-        "SUBSCRIPTION":  { failFn: genFailFn("SUBSCRIPTION") },
-        "CONNECTION":  { failFn: genFailFn("CONNECTION") },
-      }
+        "SUBSCRIPTION": {failFn: genFailFn("SUBSCRIPTION")},
+        "CONNECTION": {failFn: genFailFn("CONNECTION")}
+      };
 
       var utils = {
-        "disconnectGen": function(client) { 
-          var mqttClient = client; 
-          var retFn = function() { 
-            $log.info("disconnection called")
+        "disconnectGen": function (client) {
+          var mqttClient = client;
+          return function () {
+            $log.info("disconnection called");
             mqttClient.disconnect();
           };
-          return retFn;
         }
       };
 
       $scope.operations = {
-        "subscribe": myMqtt.subscribe("/NatWeerawan/gearname/#"),
-        "connect":  myMqtt.connect(),
+        "subscribe": myMqtt.subscribe("/CMMC/#"),
+        "connect": myMqtt.connect(),
         "config": $scope.config,
-        "disconnect": angular.noop,
+        "disconnect": angular.noop
       };
 
       myMqtt.create($scope.operations.config)
         .then($scope.operations.connect, callbacks.CONNECTION.failFn)
         .then($scope.operations.subscribe, callbacks.SUBSCRIPTION.failFn)
-        .then(function (mqttClient) { 
+        .then(function (mqttClient) {
           if (angular.isUndefined(mqttClient)) {
-              $log.debug("CONTROLLER", "UNKNOWN FAILED");
-              $scope.status = "UNKNOWN FAILED";
+            $log.debug("CONTROLLER", "UNKNOWN FAILED");
+            $scope.status = "UNKNOWN FAILED";
           }
           else {
             $scope.status = "READY";
             $scope.operations.disconnect = utils.disconnectGen(mqttClient);
           }
         });
-    }
+    };
 
     $scope.disconnect = function () {
+      $log.debug("CALLING DISCONNECT...");
       // mqttLWT.end(remmoveDevices);
       // myMqtt.end(remmoveDevices);
       // mqttXYZ.end(remmoveDevices);
@@ -267,8 +304,8 @@
     function FirstPopupDialogController($scope, $mdDialog) {
 
       $scope.config = {
-        host: 'gearbroker.netpie.io',
-        port: 8083,
+        host: 'mqtt.espert.io',
+        port: 8000,
       };
 
       $scope.save = function (newConfig) {
