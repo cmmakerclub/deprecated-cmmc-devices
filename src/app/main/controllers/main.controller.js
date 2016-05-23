@@ -67,6 +67,7 @@
     var addListener = function () {
 
       var onMsg = function (topic, payload) {
+        $log.debug(payload);
         try {
           var topics = topic.split("/");
           // $log.debug(topics)
