@@ -1,34 +1,34 @@
-  <md-dialog flex="60">
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h2>{{ devices()[deviceUUID].d.myName }}</h2>
-        <span flex></span>
+<md-dialog flex="60">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>{{ devices()[deviceUUID].d.myName }}</h2>
+      <span flex></span>
+    </div>
+  </md-toolbar>
+  <md-dialog-content layout-padding>
+    <h3>d</h3>
+    <div ng-repeat="(key, value) in devices()[deviceUUID].d" layout="row">
+
+      <div flex="40">
+        {{ key }}
       </div>
-    </md-toolbar>
-    <md-dialog-content layout-padding>
-      <h3>d</h3>
-      <div ng-repeat="(key, value) in devices()[deviceUUID].d" layout="row">
-
-        <div flex="40">
-          {{ key }}
-        </div>
-        <div flex="60">
-          {{ value }}
-        </div>
-
+      <div flex="60">
+        {{ value }}
       </div>
 
-      <h3>info</h3>
-      <div ng-repeat="(key, value) in devices()[deviceUUID].info" layout="row">
+    </div>
 
-        <div flex="40">
-          {{ key }}
-        </div>
-        <div flex="60">
-          {{ value }}
-        </div>
+    <h3>info</h3>
+    <div ng-repeat="(key, value) in devices()[deviceUUID].info" layout="row">
 
+      <div flex="40">
+        {{ key }}
+      </div>
+      <div flex="60">
+        {{ value }}
       </div>
 
-    </md-dialog-content>
-  </md-dialog>
+    </div>
+
+  </md-dialog-content>
+</md-dialog>
