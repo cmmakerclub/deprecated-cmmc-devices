@@ -114,17 +114,23 @@ angular.module('gulpAngularMqttWs')
               mqttClient.connect(options);
 
               mqttClient.onMessageArrived = function (message) {
-                var topic = message.destinationName;
-                var payload = message.payloadString;
-                var ev = events.message || function () {
-                    console.log("EV");
-                  };
-                $log.info("onMessageArrived topic = ", topic);
-                ev.apply(null, [topic, payload, message]);
-                var ev2 = events[topic.toString()] || function () {
-                    console.log("EV2");
-                  };
-                ev2.apply(null, [payload, message]);
+                try {
+                  var topic = message.destinationName;
+                  var payload = message.payloadString;
+                  var ev = events.message || function () {
+                      console.log("EV");
+                    };
+
+                  $log.info("onMessageArrived topic = ", topic);
+                  ev.apply(null, [topic, payload, message]);
+                  var ev2 = events[topic.toString()] || function () {
+                      console.log("EV2");
+                    };
+                  ev2.apply(null, [payload, message]);
+                }
+                catch(ex) {
+                  $log.error("mqttProvider error", ex);
+                }
               };
 
               mqttClient.onConnectionLost = function(responseObject) {

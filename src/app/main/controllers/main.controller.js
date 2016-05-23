@@ -67,7 +67,6 @@
     var addListener = function () {
 
       var onMsg = function (topic, payload) {
-        $log.debug(payload);
         try {
           var topics = topic.split("/");
           // $log.debug(topics)
@@ -120,7 +119,11 @@
         }
       };
 
+    try{
       myMqtt.on("message", onMsg);
+     }catch(ex) {
+      $log.error("onmessage error", ex);
+     }
     };
 
     $scope.showDetail = function (ev, deviceUUIDuuid) {
