@@ -13,7 +13,7 @@ html {
 
 .layout-padding.md-default-theme {
   min-height: 1000px;
-  
+
 }
 
 [layout=row] {
@@ -46,7 +46,7 @@ section.jumbotron {
   text-align: center;
 
   // color: white;
- 
+
 
   h1 {
     font-size: 3em;
@@ -58,19 +58,22 @@ section.jumbotron {
   flex-flow: row wrap;
   md-card {
     width: 30%;
+    overflow: hidden;
+    min-width: 200px;
+    padding: 10px;
 
     img.pull-right {
       float: right;
       width: 50px;
     }
-    
+
     &.DEAD {
       background: lighten($color: lightsalmon , $amount: 20);
     }
-    
+
     &.ONLINE, &.online {
       background: lighten($color: lightgreen , $amount: 16);
-    }    
+    }
   }
 }
 
