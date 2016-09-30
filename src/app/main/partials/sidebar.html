@@ -1,7 +1,7 @@
 <section>
   <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right" layout-align="start center">
     <md-toolbar class="md-theme-light" layout="row" layout-align="center center">
-      Config
+      Config SSS
     </md-toolbar>
     <md-content layout-padding class="autoScroll">
       <form ng-submit="closeAndSaveNewConfig(config)">
@@ -27,7 +27,7 @@
 
         <md-input-container ng-show="data.cb_clientId">
           <label>clientId</label>
-          <input ng-model="config.clientId" type="clientId" required>
+          <input ng-model="config.clientId" type="text" required>
         </md-input-container>
 
         <div class="cmmc-checkboxes" flex="100">
@@ -46,7 +46,7 @@
         </div>
 
         <div class="cmmc-checkboxes" flex="100">
-          <md-checkbox ng-init="data.ssl=false" ng-model="data.ssl" aria-label="SSL" class="md-warn md-align-top-left">
+          <md-checkbox ng-model="data.ssl" aria-label="SSL" class="md-warn md-align-top-left">
             SSL
           </md-checkbox>
         </div>

@@ -28,6 +28,22 @@
 
     $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil, $log);
 
+    angular.extend($scope, {
+      data: {
+        cb_auth: true,
+        cb_clientId: true,
+        ssl: true
+      }
+    });
+
+    angular.extend($scope, {
+      data: {
+        cb_auth: true,
+        cb_clientId: true,
+        ssl: true
+      }
+    });
+
     // load config
     $scope.storage = $localStorage.$default({
       config: {
