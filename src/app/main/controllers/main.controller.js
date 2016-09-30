@@ -3,12 +3,12 @@
   angular
     .module('cmmcDevices')
     .factory("myMqtt", function (mqttwsProvider) {
-      var MQTT = mqttwsProvider({});
-      return MQTT;
+      // return mqtt connector
+      return mqttwsProvider({});
     })
     .controller('MainController', MainController);
 
-  var buildToggler = function buildToggler(navID, $mdSidenav, $mdUtil) {
+  var buildToggler = function buildToggler(navID, $mdSidenav, $mdUtil, $log) {
     var callback = function () {
       $mdSidenav(navID)
         .toggle()
@@ -18,7 +18,7 @@
     };
 
     // return debounce function
-    return  $mdUtil.debounce(callback, 200);
+    return $mdUtil.debounce(callback, 200);
   };
 
   /** @ngInject */
@@ -26,7 +26,7 @@
                           $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
     var _private = angular.extend(this, {devices: {}, LWT: {}});
 
-    $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil);
+    $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil, $log);
 
     // load config
     $scope.storage = $localStorage.$default({
@@ -130,12 +130,12 @@
       }
     };
 
-    $scope.showDetail = function (ev, deviceUUIDuuid) {
+    $scope.showDetail = function (targetEvent, deviceUUIDuuid) {
       $mdDialog.show({
         controller: DialogController,
         templateUrl: 'app/main/partials/detail.html',
         parent: angular.element(document.body),
-        targetEvent: ev,
+        targetEvent: targetEvent,
         clickOutsideToClose: true,
         locals: {
           deviceUUID: deviceUUIDuuid,
@@ -201,9 +201,6 @@
 
       var genFailFn = function (type) {
         return function (error) {
-          $scope.failed = true;
-          $log.error(type + " FAILED", error);
-          $scope.status = type + " FAILED = " + error.errorMessage;
         };
       };
 
@@ -231,12 +228,20 @@
       };
 
       myMqtt.create($scope.operations.config)
-        .then($scope.operations.connect, callbacks.CONNECTION.failFn)
-        .then($scope.operations.subscribe, callbacks.SUBSCRIPTION.failFn)
+        .then($scope.operations.connect, function (error) {
+          $scope.failed = true;
+          $log.error("CONNECT FAILED: ", error);
+          $scope.status = error.errorMessage;
+        })
+        .then($scope.operations.subscribe, function (error) {
+          $scope.failed = true;
+          $log.error("SUBSCRIBE FAILED: ", error);
+          $scope.status = error.errorMessage;
+        })
         .then(function (mqttClient) {
           if (angular.isUndefined(mqttClient)) {
             $log.debug("CONTROLLER", "Unable to connect to the broker");
-            $scope.status = "unable to connect to the broker.";
+            // $scope.status = "unable to connect to the broker.";
           }
           else {
             $scope.status = "READY";

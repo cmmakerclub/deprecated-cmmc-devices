@@ -58,7 +58,7 @@ angular.module('cmmcDevices')
             return function _subscribe() {
               var defer = $q.defer();
               var subscribed = function () {
-                $log.debug("PROVIDER", "subscribe succeeded.")
+                $log.debug("PROVIDER", "subscribe succeeded.");
                 defer.resolve(mqttClient);
               };
 
@@ -66,7 +66,6 @@ angular.module('cmmcDevices')
 
               $log.warn("being subscribed ", topic, opts);
               mqttClient.subscribe(topic, opts);
-
               $log.debug("PROVIDER", "SUB", topic, opts);
               return defer.promise;
             };
@@ -80,6 +79,7 @@ angular.module('cmmcDevices')
                 var ev = events.connected || function () {
                     $log.debug("[77]..CONNECTED..");
                   };
+
                 $log.debug("PROVIDER", "CONNECTION CONNECTED");
 
                 ev.call(null, arguments);
@@ -128,12 +128,12 @@ angular.module('cmmcDevices')
                     };
                   ev2.apply(null, [payload, message]);
                 }
-                catch(ex) {
+                catch (ex) {
                   $log.error("mqttProvider error", ex);
                 }
               };
 
-              mqttClient.onConnectionLost = function(responseObject) {
+              mqttClient.onConnectionLost = function (responseObject) {
                 console.log("onConnection Lost ", responseObject);
               };
 

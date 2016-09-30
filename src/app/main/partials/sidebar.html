@@ -30,26 +30,32 @@
           <input ng-model="config.clientId" type="clientId" required>
         </md-input-container>
 
-        <md-checkbox ng-init="data.ssl=false" ng-model="data.ssl" aria-label="SSL" class="md-warn md-align-top-left">
-          SSL
+        <div class="cmmc-checkboxes" flex="100">
+          <md-checkbox ng-init="data.cb_auth=false" ng-model="data.cb_auth" aria-label="Checkbox 2"
+                       class="md-warn md-align-top-left">
+            <!-- {{ data.cb_auth }} -->
+            username & password
           </md-checkbox>
-        <md-checkbox ng-init="data.cb_auth=false" ng-model="data.cb_auth" aria-label="Checkbox 2" class="md-warn md-align-top-left">
-          <!-- {{ data.cb_auth }} -->
-          username & password
-          </md-checkbox>
+        </div>
 
+        <div class="cmmc-checkboxes" flex="100">
           <md-checkbox ng-model="data.cb_clientId" aria-label="Checkbox 2" class="md-warn md-align-top-left">
             <!-- {{ data.cb_clientId }} -->
             clientId
           </md-checkbox>
+        </div>
 
-          <md-input-container>
-            <md-button class="md-raised">Save</md-button>
-          </md-input-container>
-        </form>
+        <div class="cmmc-checkboxes" flex="100">
+          <md-checkbox ng-init="data.ssl=false" ng-model="data.ssl" aria-label="SSL" class="md-warn md-align-top-left">
+            SSL
+          </md-checkbox>
+        </div>
+
         <md-input-container>
+          <md-button class="md-raised" flex="100">Save</md-button>
           <md-button class="md-raised md-warn" ng-click="closeNav()">Cancel</md-button>
         </md-input-container>
+      </form>
     </md-content>
 
   </md-sidenav>
