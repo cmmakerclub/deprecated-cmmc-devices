@@ -4,7 +4,6 @@
  */
 // bower:scss
 // endbower
-
 @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,700|Roboto:400,700,700italic,400italic);
 
 html {
@@ -39,14 +38,12 @@ md-toolbar.md-default-theme {
   // background-color: black;
 }
 
-section.jumbotron {
+section.main-section{
   margin-bottom: 30px;
   padding: 1px 30px;
   // background-color: #5aadbb;
   text-align: center;
-
-  // color: white;
-
+  min-height: 600px;
 
   h1 {
     font-size: 3em;
@@ -68,30 +65,38 @@ section.jumbotron {
     }
 
     &.DEAD {
-      background: lighten($color: lightsalmon , $amount: 20);
+      background: lighten($color: lightsalmon, $amount: 20);
     }
 
     &.ONLINE, &.online {
-      background: lighten($color: lightgreen , $amount: 16);
+      background: lighten($color: lightgreen, $amount: 16);
     }
   }
 }
 
 #vertical-container {
   height: 292px;
-  width: 400px; }
+  width: 400px;
+}
+
 .repeated-item {
   border-bottom: 1px solid #ddd;
   box-sizing: border-box;
   height: 40px;
-  padding-top: 10px; }
-md-content {
-  margin: 16px; }
-md-virtual-repeat-container {
-  border: solid 1px grey; }
-.md-virtual-repeat-container .md-virtual-repeat-offsetter {
-  padding-left: 16px; }
+  padding-top: 10px;
+}
 
+md-content {
+  margin: 16px;
+}
+
+md-virtual-repeat-container {
+  border: solid 1px grey;
+}
+
+.md-virtual-repeat-container .md-virtual-repeat-offsetter {
+  padding-left: 16px;
+}
 
 /*.dialog-content {
   min-height: 30%;
@@ -100,7 +105,6 @@ md-virtual-repeat-container {
   width: 50%;
 }
 */
-
 
 /**
  *  Do not remove this comments bellow. It's the markers used by gulp-inject to inject

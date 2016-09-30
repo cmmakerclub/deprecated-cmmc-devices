@@ -1,34 +1,32 @@
 (function () {
   'use strict';
-  var pre_options = {};
   angular
     .module('cmmcDevices')
     .factory("myMqtt", function (mqttwsProvider) {
-      var MQTT = mqttwsProvider(pre_options);
+      var MQTT = mqttwsProvider({});
       return MQTT;
     })
     .controller('MainController', MainController);
 
+  var buildToggler = function buildToggler(navID, $mdSidenav, $mdUtil) {
+    var callback = function () {
+      $mdSidenav(navID)
+        .toggle()
+        .then(function () {
+          $log.debug("toggle " + navID + " is done");
+        });
+    };
+
+    // return debounce function
+    return  $mdUtil.debounce(callback, 200);
+  };
+
   /** @ngInject */
   function MainController($scope, $timeout, myMqtt, $localStorage,
                           $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
-    var vm = this;
-    vm.devices = {};
-    vm.LWT = {};
+    var _private = angular.extend(this, {devices: {}, LWT: {}});
 
-    var buildToggler = function buildToggler(navID) {
-
-      var debounceFn = $mdUtil.debounce(function () {
-        $mdSidenav(navID)
-          .toggle()
-          .then(function () {
-            $log.debug("toggle " + navID + " is done");
-          });
-      }, 200);
-      return debounceFn;
-    };
-
-    $scope.toggleRight = buildToggler('right');
+    $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil);
 
     // load config
     $scope.storage = $localStorage.$default({
@@ -69,29 +67,35 @@
       var onMsg = function (topic, payload) {
         try {
           var topics = topic.split("/");
-          // $log.debug(topics)
           var max_depth = topics.length - 1;
+          $log.debug("splitted topics", topics);
+          $log.debug("max topic depth", max_depth);
 
           var incomming_topic = topics[max_depth];
 
+          var values;
+          var status;
+          var id;
+          var mac;
+
+          // protocol: /prefix/device uid/online
           if (incomming_topic == "online") {
             $log.debug("online", topics);
-            var values = payload.split("|");
-
-            var status = values[0];
-            var id = values[1];
-            var mac = values[1];
+            values = payload.split("|");
+            status = values[0];
+            id = values[1];
+            mac = values[1];
             $log.debug('id', id, "mac", mac, "status", status, new Date());
 
             if (mac && mac === status) {
               status = "online";
             }
 
-            vm.LWT[mac || id] = status;
+            _private.LWT[mac || id] = status;
             // vm.devices[mac || id] .status = status;
-            if (vm.devices[mac || id]) {
-              vm.devices[mac || id].status = status;
-              $log.debug(vm);
+            if (_private.devices[mac || id]) {
+              _private.devices[mac || id].status = status;
+              $log.debug(_private);
               $scope.$apply();
             }
           }
@@ -100,10 +104,10 @@
               var _payload = JSON.parse(payload);
               var _id2 = _payload.info && _payload.info.id;
               var _id = _payload.d && _payload.d.id;
-              _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
+              _payload.status = _private.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
               _payload.online = _payload.status !== "DEAD";
-              vm.devices[_id || _id2] = _payload;
-              delete vm.devices.undefined;
+              _private.devices[_id || _id2] = _payload;
+              delete _private.devices.undefined;
               $scope.$apply();
             }
             catch (exception) {
@@ -175,11 +179,11 @@
     };
 
     var remmoveDevices = function () {
-      vm.devices = {};
+      _private.devices = {};
     };
 
     $scope.allDevices = function () {
-      return vm.devices;
+      return _private.devices;
     };
 
     //asynchronously
@@ -187,7 +191,7 @@
       $scope.status = "CONNECTING";
 
       addListener();
-      vm.devices = {};
+      _private.devices = {};
       angular.forEach($scope.config, function (value, key) {
         if ($scope.config[key] == "") {
           delete $scope.config[key];
@@ -231,8 +235,8 @@
         .then($scope.operations.subscribe, callbacks.SUBSCRIPTION.failFn)
         .then(function (mqttClient) {
           if (angular.isUndefined(mqttClient)) {
-            $log.debug("CONTROLLER", "UNKNOWN FAILED");
-            $scope.status = "UNKNOWN FAILED";
+            $log.debug("CONTROLLER", "Unable to connect to the broker");
+            $scope.status = "unable to connect to the broker.";
           }
           else {
             $scope.status = "READY";
@@ -243,9 +247,6 @@
 
     $scope.disconnect = function () {
       $log.debug("CALLING DISCONNECT...");
-      // mqttLWT.end(remmoveDevices);
-      // myMqtt.end(remmoveDevices);
-      // mqttXYZ.end(remmoveDevices);
       $scope.operations.disconnect();
     };
 
