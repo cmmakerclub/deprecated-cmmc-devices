@@ -241,29 +241,19 @@
       };
 
       myMqtt.create($scope.operations.config)
-        .then($scope.operations.connect, function (error) {
-          $scope.failed = true;
-          $log.error("CONNECT FAILED: ", error);
-          $scope.status = error.errorMessage;
-        })
-        .then($scope.operations.subscribe, function (error) {
-          $scope.failed = true;
-          $log.error("SUBSCRIBE FAILED: ", error);
-          $scope.status = error.errorMessage;
-        })
+        .then($scope.operations.connect)
+        .then($scope.operations.subscribe)
         .then(function (mqttClient) {
-          if (angular.isUndefined(mqttClient)) {
-            $log.debug("CONTROLLER", "Unable to connect to the broker");
-            // $scope.status = "unable to connect to the broker.";
-          }
-          else {
-            $scope.status = "READY";
-            $scope.operations.disconnect = function () {
-              $log.info("disconnection called");
-              mqttClient.disconnect();
-            };
-          }
-        });
+          $scope.status = "READY";
+          $scope.operations.disconnect = function () {
+            $log.info("disconnection called");
+            mqttClient.disconnect();
+          };
+        }).catch(function (error) {
+        $scope.failed = true;
+        $log.error("CONNECT FAILED: ", error);
+        $scope.status = error.errorMessage;
+      });
     };
 
     $scope.disconnect = function () {

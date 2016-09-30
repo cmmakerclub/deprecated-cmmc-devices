@@ -42,7 +42,7 @@
           <div class="caption">
             <h3>{{ device.d.myName }} - {{ device.status }}</h3>
             <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
-            <div>{{ device.d.counter }} ({{ device.d.millis}} ms)</div>
+            <div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>
             <div>{{ device.d.ip || device.info.ip }}</div>
             <div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>
             <divn ng-show="{{device.info.sensor}}">{{ device.info.sensor || device.d.sensor || "?" }}</divn>

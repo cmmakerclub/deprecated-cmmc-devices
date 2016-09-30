@@ -29,8 +29,6 @@ angular.module('cmmcDevices')
         var events = {};
         var _options = {};
 
-        // var callback = options.callback;
-
         return {
           on: function (event, func) {
             events[event] = func;
@@ -53,33 +51,23 @@ angular.module('cmmcDevices')
             return defer.promise;
           },
           subscribe: function (topic, opts) {
-            $log.info("[MQTTWSPROVIDER] DOING.. SUBSCRIBE =", arguments);
-            opts = opts || {qos: 0};
             var defer = $q.defer();
-            var subscribed = function () {
-              $log.debug("PROVIDER", "subscribe succeeded.");
+            opts = opts || {qos: 0};
+            opts.onSuccess = function () {
               defer.resolve(mqttClient);
             };
-
-            opts.onSuccess = subscribed;
-
-            $log.warn("being subscribed ", topic, opts);
             mqttClient.subscribe(topic, opts);
-            $log.debug("PROVIDER", "SUB", topic, opts);
             return defer.promise;
           },
           connect: function () {
-            $log.debug("[72] higher connect()");
             var defer = $q.defer();
 
             var onSuccess = function () {
-              var ev = events.connected || function () {
-                  $log.debug("[77]..CONNECTED..");
+              var success_event = events.connected || function () {
+                  $log.debug("[69] DEFAULT CONNECTED..");
                 };
-
-              $log.debug("PROVIDER", "CONNECTION CONNECTED");
-
-              ev.call(null, arguments);
+              success_event.call(null, arguments);
+              $log.debug("[Provider] onSuccess", "MQTT CONNECTED..");
               defer.resolve(arguments);
             };
 
@@ -102,28 +90,25 @@ angular.module('cmmcDevices')
             $log.debug("[101] PROVIDER", "OPTIONS", _options);
 
             if (!!_options.username) {
-              options.userName = _options.username;
-              options.password = _options.password;
+              angular.extend(options, {
+                username: _options.username,
+                password: _options.password
+              });
             }
 
             $log.info("MQTT CONNECTION OPTIONS = ", options);
 
-            mqttClient.connect(options);
 
             mqttClient.onMessageArrived = function (message) {
               try {
                 var topic = message.destinationName;
                 var payload = message.payloadString;
-                var ev = events.message || function () {
-                    console.log("EV");
-                  };
-
-                $log.info("onMessageArrived topic = ", topic);
+                var ev = events.message || angular.noop;
+                // $log.info("onMessageArrived topic = ", topic);
                 ev.apply(null, [topic, payload, message]);
-                var ev2 = events[topic.toString()] || function () {
-                    console.log("EV2");
-                  };
-                ev2.apply(null, [payload, message]);
+
+                // var ev2 = events[topic.toString()] || angular.noop;
+                // ev2.apply(null, [payload, message]);
               }
               catch (ex) {
                 $log.error("mqttProvider error", ex);
@@ -133,6 +118,8 @@ angular.module('cmmcDevices')
             mqttClient.onConnectionLost = function (responseObject) {
               console.log("onConnection Lost ", responseObject);
             };
+
+            mqttClient.connect(options);
 
             return defer.promise;
 
