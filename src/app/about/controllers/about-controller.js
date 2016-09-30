@@ -1,12 +1,12 @@
 'use strict';
 /**
  * @ngdoc function
- * @name gulpAngularMqttWs.controller:aboutCtrl
+ * @name cmmcDevices.controller:aboutCtrl
  * @description
  * # aboutCtrl
- * Controller of the gulpAngularMqttWs
+ * Controller of the cmmcDevices
  */
-angular.module('gulpAngularMqttWs')
+angular.module('cmmcDevices')
   .controller('aboutCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',

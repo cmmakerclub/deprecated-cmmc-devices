@@ -1,7 +1,7 @@
 'use strict';
 describe('Directive: sidebarNetpieConfig', function () {
 // load the directive's module
-  beforeEach(module('gulpAngularMqttWs'));
+  beforeEach(module('cmmcDevices'));
   var element,
     scope;
   beforeEach(inject(function ($rootScope) {

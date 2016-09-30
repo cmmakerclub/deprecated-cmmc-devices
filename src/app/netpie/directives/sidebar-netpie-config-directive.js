@@ -1,11 +1,11 @@
 'use strict';
 /**
  * @ngdoc directive
- * @name gulpAngularMqttWs.directive:sidebarNetpieConfig
+ * @name cmmcDevices.directive:sidebarNetpieConfig
  * @description
  * # sidebarNetpieConfig
  */
-angular.module('gulpAngularMqttWs')
+angular.module('cmmcDevices')
   .directive('sidebarNetpieConfig', function () {
     return {
       templateUrl: 'app/netpie/partials/sidebar.html',

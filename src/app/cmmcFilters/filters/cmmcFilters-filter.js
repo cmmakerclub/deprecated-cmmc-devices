@@ -1,13 +1,13 @@
 'use strict';
 /**
  * @ngdoc filter
- * @name gulpAngularMqttWs.filter:cmmcFilters
+ * @name cmmcDevices.filter:cmmcFilters
  * @function
  * @description
  * # cmmcFilters
- * Filter in the gulpAngularMqttWs.
+ * Filter in the cmmcDevices.
  */
-angular.module('gulpAngularMqttWs')
+angular.module('cmmcDevices')
   .filter('status', function () {
     return function (input, status) {
 

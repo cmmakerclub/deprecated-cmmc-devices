@@ -7,7 +7,7 @@
  * # mqttwsProvider
  * Provider in the myNewProjectApp.
  */
-angular.module('gulpAngularMqttWs')
+angular.module('cmmcDevices')
   .provider('mqttwsProvider', function () {
     // $log.debug("mqttwsProvider")
     // Method for instantiating

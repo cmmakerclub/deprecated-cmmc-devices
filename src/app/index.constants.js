@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-    .module('gulpAngularMqttWs')
+    .module('cmmcDevices')
     .constant('toastr', toastr)
     .constant('moment', moment);
 

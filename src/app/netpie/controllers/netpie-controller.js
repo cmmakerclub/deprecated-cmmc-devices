@@ -1,12 +1,12 @@
 'use strict';
 /**
  * @ngdoc function
- * @name gulpAngularMqttWs.controller:netpieCtrl
+ * @name cmmcDevices.controller:netpieCtrl
  * @description
  * # netpieCtrl
- * Controller of the gulpAngularMqttWs
+ * Controller of the cmmcDevices
  */
-angular.module('gulpAngularMqttWs')
+angular.module('cmmcDevices')
   .controller('netpieCtrl', function ($mdUtil, $mdSidenav, $scope, $http, $localStorage, $mdToast) {
 
     var buildToggler = function buildToggler(navID) {

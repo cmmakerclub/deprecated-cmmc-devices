@@ -2,7 +2,7 @@
   'use strict';
   var pre_options = {};
   angular
-    .module('gulpAngularMqttWs')
+    .module('cmmcDevices')
     .factory("myMqtt", function (mqttwsProvider) {
       var MQTT = mqttwsProvider(pre_options);
       return MQTT;

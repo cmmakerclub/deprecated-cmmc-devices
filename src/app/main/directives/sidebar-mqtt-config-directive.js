@@ -1,11 +1,11 @@
 'use strict';
 /**
  * @ngdoc directive
- * @name gulpAngularMqttWs.directive:sidebarMqttConfig
+ * @name cmmcDevices.directive:sidebarMqttConfig
  * @description
  * # sidebarMqttConfig
  */
-angular.module('gulpAngularMqttWs')
+angular.module('cmmcDevices')
   .directive('sidebarMqttConfig', function () {
     return {
       templateUrl: 'app/main/partials/sidebar.html',

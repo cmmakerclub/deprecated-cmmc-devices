@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('gulpAngularMqttWs')
+    .module('cmmcDevices')
     .directive('myNavBar', acmeNavbar);
 
   /** @ngInject */

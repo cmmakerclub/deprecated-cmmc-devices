@@ -2,5 +2,5 @@
   'use strict';
 
   angular
-    .module('gulpAngularMqttWs', ['ngAnimate', 'ngCookies', 'ngSanitize', 'ui.router', 'ngMaterial', 'ngStorage']);
+    .module('cmmcDevices', ['ngAnimate', 'ngCookies', 'ngSanitize', 'ui.router', 'ngMaterial', 'ngStorage']);
 })();

@@ -1,7 +1,7 @@
 'use strict';
 describe('Controller: aboutCtrl', function () {
 // load the controller's module
-  beforeEach(module('gulpAngularMqttWs'));
+  beforeEach(module('cmmcDevices'));
   var aboutCtrl,
       scope;
 // Initialize the controller and a mock scope

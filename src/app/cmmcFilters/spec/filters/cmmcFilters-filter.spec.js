@@ -2,7 +2,7 @@
 
 describe('Filter: cmmcFilters', function () {
 // load the filter's module
-  beforeEach(module('gulpAngularMqttWs'));
+  beforeEach(module('cmmcDevices'));
 // initialize a new instance of the filter before each test
   var cmmcFilters;
   beforeEach(inject(function ($filter) {

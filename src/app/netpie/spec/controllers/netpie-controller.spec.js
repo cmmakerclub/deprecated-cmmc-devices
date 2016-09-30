@@ -1,7 +1,7 @@
 'use strict';
 describe('Controller: netpieCtrl', function () {
 // load the controller's module
-  beforeEach(module('gulpAngularMqttWs'));
+  beforeEach(module('cmmcDevices'));
   var netpieCtrl,
       scope;
 // Initialize the controller and a mock scope
