@@ -224,17 +224,6 @@
       });
 
 
-      var genFailFn = function (type) {
-        return function (error) {
-        };
-      };
-
-
-      var callbacks = {
-        "SUBSCRIPTION": {failFn: genFailFn("SUBSCRIPTION")},
-        "CONNECTION": {failFn: genFailFn("CONNECTION")}
-      };
-
       var utils = {
         "disconnectGen": function (client) {
           var mqttClient = client;
