@@ -33,8 +33,8 @@
     // load config
     $scope.storage = $localStorage.$default({
       config: {
-        host: 'mqtt.espert.io',
-        port: 8000,
+        host: 'mqtt.cmmc.io',
+        port: 9001,
         // username: "BZXrhDBMKutYd68%1443014670",
         // password: "i4jmEZaflGYzXxxi2g5byEM5VA4=",
         // clientId: "eqSZOmyJ2oXN4CJs"
@@ -119,11 +119,11 @@
         }
       };
 
-    try{
-      myMqtt.on("message", onMsg);
-     }catch(ex) {
-      $log.error("onmessage error", ex);
-     }
+      try {
+        myMqtt.on("message", onMsg);
+      } catch (ex) {
+        $log.error("onmessage error", ex);
+      }
     };
 
     $scope.showDetail = function (ev, deviceUUIDuuid) {
@@ -263,9 +263,8 @@
     }
 
     function FirstPopupDialogController($scope, $mdDialog) {
-
       $scope.config = {
-        host: 'mqtt.espert.io',
+        host: 'mqtt.cmmc.io',
         port: 8000
       };
 
