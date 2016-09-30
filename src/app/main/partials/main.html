@@ -35,18 +35,18 @@
     </md-content>
 
     <div class="devices" layout-align="center">
-      <md-card ng-class="device.status"
+      <md-card class="item" ng-class="device.status"
                ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
         <div class="thumbnail">
           <!--<img class="pull-right" ng-src="assets/images/{{ device.logo }}" alt="{{ device.title }}">-->
           <div class="caption">
             <h3>{{ device.d.myName }} - {{ device.status }}</h3>
             <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
-            <div>{{ device.d.seconds }} ({{ device.d.subscription }})</div>
+            <div>{{ device.d.counter }} ({{ device.d.millis}} ms)</div>
             <div>{{ device.d.ip || device.info.ip }}</div>
             <div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>
             <divn ng-show="{{device.info.sensor}}">{{ device.info.sensor || device.d.sensor || "?" }}</divn>
-            <div>{{device.info.prefix}}/{{ device.info.id || device.d.id }}/status</div>
+            <div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>
             <!--<div>esp8266/{{ device.info.id || device.d.id }}/command</div>                            -->
           </div>
         </div>

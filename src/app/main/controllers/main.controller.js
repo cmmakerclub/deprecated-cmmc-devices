@@ -44,6 +44,8 @@
       }
     });
 
+    // addListener();
+
     // load config
     $scope.storage = $localStorage.$default({
       config: {
@@ -78,8 +80,16 @@
     $scope.filterDevice = {};
     $scope.filterDevice.name = "";
 
-    var addListener = function () {
+    function isValidJson(str) {
+      try {
+        JSON.parse(str);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    }
 
+    var addListener = function () {
       var onMsg = function (topic, payload) {
         try {
           var topics = topic.split("/");
@@ -88,62 +98,57 @@
           $log.debug("max topic depth", max_depth);
 
           var incomming_topic = topics[max_depth];
+          var lwt_values, lwt_status, device_id;
 
-          var values;
-          var status;
-          var id;
-          var mac;
+          // protocol: /prefix/device_uid/online
+          // protocol: /prefix/device_uid/status
+          if (incomming_topic === "status") {
+            if (isValidJson(payload)) {
+              var _payload = JSON.parse(payload);
+              var _device_id_value = _payload.info && _payload.info.device_id;
 
-          // protocol: /prefix/device uid/online
-          if (incomming_topic == "online") {
-            $log.debug("online", topics);
-            values = payload.split("|");
-            status = values[0];
-            id = values[1];
-            mac = values[1];
-            $log.debug('id', id, "mac", mac, "status", status, new Date());
+              angular.extend(_payload, {
+                status: (_private.LWT[_device_id_value]) || "ONLINE" || "UNKNOWN",
+                online: _payload.status !== "DEAD"
+              });
 
-            if (mac && mac === status) {
-              status = "online";
+              _private.devices[_device_id_value] = _payload;
+              delete _private.devices.undefined;
+
+              $scope.$apply();
             }
+            else {
+              $log.error("INVALID JSON");
+            }
+          }
+          else if (incomming_topic == "online") {
+            $log.debug("online", topics);
+            lwt_values = payload.split("|");
+            lwt_status = lwt_values[0];
+            device_id = lwt_values[1];
 
-            _private.LWT[mac || id] = status;
-            // vm.devices[mac || id] .status = status;
-            if (_private.devices[mac || id]) {
-              _private.devices[mac || id].status = status;
+            if (device_id === lwt_status) {
+              lwt_status = "online";
+            }
+            $log.debug('device_id', device_id, "mac", device_id, "status", lwt_status, new Date());
+
+            _private.LWT[device_id] = lwt_status;
+            if (_private.devices[device_id]) {
+              _private.devices[device_id].status = lwt_status;
               $log.debug(_private);
               $scope.$apply();
             }
           }
           else {
-            try {
-              var _payload = JSON.parse(payload);
-              var _id2 = _payload.info && _payload.info.id;
-              var _id = _payload.d && _payload.d.id;
-              _payload.status = _private.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
-              _payload.online = _payload.status !== "DEAD";
-              _private.devices[_id || _id2] = _payload;
-              delete _private.devices.undefined;
-              $scope.$apply();
-            }
-            catch (exception) {
-              $log.debug("Exception: ");
-              $log.debug("=====", payload);
-            }
+            // TODO: Unhandled topic
           }
         }
         catch (ex) {
           $log.debug("EXCEPTION!!!", ex);
-          $log.debug("EXCEPTION!!!", ex);
-          $log.debug("EXCEPTION!!!", ex);
         }
       };
 
-      try {
-        myMqtt.on("message", onMsg);
-      } catch (ex) {
-        $log.error("onmessage error", ex);
-      }
+      myMqtt.on("message", onMsg);
     };
 
     $scope.showDetail = function (targetEvent, deviceUUIDuuid) {
@@ -166,8 +171,8 @@
     };
 
     var isFirstLogin = function () {
-      // var firstLogin =
-      //   (!$scope.config.host != null && $scope.config.host != "") == false;
+      var firstLogin =
+        (!$scope.config.host != null && $scope.config.host != "") == false;
       return false;
     };
 
@@ -195,7 +200,7 @@
     };
 
     var remmoveDevices = function () {
-      _private.devices = {};
+      angular.extend(_private, {devices: {}});
     };
 
     $scope.allDevices = function () {
@@ -204,10 +209,14 @@
 
     //asynchronously
     $scope.connect = function () {
-      $scope.status = "CONNECTING";
+      $scope.status = "CONNECTING...";
 
       addListener();
-      _private.devices = {};
+
+      angular.extend(_private, {
+        devices: {}
+      });
+
       angular.forEach($scope.config, function (value, key) {
         if ($scope.config[key] == "") {
           delete $scope.config[key];

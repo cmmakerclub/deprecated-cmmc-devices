@@ -50,6 +50,11 @@ section.main-section{
 .devices {
   display: flex;
   flex-flow: row wrap;
+
+  .item {
+    text-align: center;
+  }
+
   md-card {
     width: 30%;
     overflow: hidden;
