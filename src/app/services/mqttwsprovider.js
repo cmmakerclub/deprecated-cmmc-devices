@@ -55,91 +55,87 @@ angular.module('cmmcDevices')
           subscribe: function (topic, opts) {
             $log.info("[MQTTWSPROVIDER] DOING.. SUBSCRIBE =", arguments);
             opts = opts || {qos: 0};
-            return function _subscribe() {
-              var defer = $q.defer();
-              var subscribed = function () {
-                $log.debug("PROVIDER", "subscribe succeeded.");
-                defer.resolve(mqttClient);
-              };
-
-              opts.onSuccess = subscribed;
-
-              $log.warn("being subscribed ", topic, opts);
-              mqttClient.subscribe(topic, opts);
-              $log.debug("PROVIDER", "SUB", topic, opts);
-              return defer.promise;
+            var defer = $q.defer();
+            var subscribed = function () {
+              $log.debug("PROVIDER", "subscribe succeeded.");
+              defer.resolve(mqttClient);
             };
+
+            opts.onSuccess = subscribed;
+
+            $log.warn("being subscribed ", topic, opts);
+            mqttClient.subscribe(topic, opts);
+            $log.debug("PROVIDER", "SUB", topic, opts);
+            return defer.promise;
           },
           connect: function () {
             $log.debug("[72] higher connect()");
-            return function () {
-              var defer = $q.defer();
+            var defer = $q.defer();
 
-              var onSuccess = function () {
-                var ev = events.connected || function () {
-                    $log.debug("[77]..CONNECTED..");
+            var onSuccess = function () {
+              var ev = events.connected || function () {
+                  $log.debug("[77]..CONNECTED..");
+                };
+
+              $log.debug("PROVIDER", "CONNECTION CONNECTED");
+
+              ev.call(null, arguments);
+              defer.resolve(arguments);
+            };
+
+            var onFailure = function (message) {
+              $log.error("[86]..FAILED....", message);
+              // $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
+              defer.reject(message);
+            };
+
+            var options = {
+              timeout: 10,
+              useSSL: useTLS,
+              // mqttVersionExplicit: true,
+              mqttVersion: 3,
+              cleanSession: cleansession,
+              onSuccess: onSuccess,
+              onFailure: onFailure
+            };
+
+            $log.debug("[101] PROVIDER", "OPTIONS", _options);
+
+            if (!!_options.username) {
+              options.userName = _options.username;
+              options.password = _options.password;
+            }
+
+            $log.info("MQTT CONNECTION OPTIONS = ", options);
+
+            mqttClient.connect(options);
+
+            mqttClient.onMessageArrived = function (message) {
+              try {
+                var topic = message.destinationName;
+                var payload = message.payloadString;
+                var ev = events.message || function () {
+                    console.log("EV");
                   };
 
-                $log.debug("PROVIDER", "CONNECTION CONNECTED");
-
-                ev.call(null, arguments);
-                defer.resolve(arguments);
-              };
-
-              var onFailure = function (message) {
-                $log.error("[86]..FAILED....", message);
-                // $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
-                defer.reject(message);
-              };
-
-              var options = {
-                timeout: 10,
-                useSSL: useTLS,
-                // mqttVersionExplicit: true,
-                mqttVersion: 3,
-                cleanSession: cleansession,
-                onSuccess: onSuccess,
-                onFailure: onFailure
-              };
-
-              $log.debug("[101] PROVIDER", "OPTIONS", _options);
-
-              if (!!_options.username) {
-                options.userName = _options.username;
-                options.password = _options.password;
+                $log.info("onMessageArrived topic = ", topic);
+                ev.apply(null, [topic, payload, message]);
+                var ev2 = events[topic.toString()] || function () {
+                    console.log("EV2");
+                  };
+                ev2.apply(null, [payload, message]);
               }
+              catch (ex) {
+                $log.error("mqttProvider error", ex);
+              }
+            };
 
-              $log.info("MQTT CONNECTION OPTIONS = ", options);
+            mqttClient.onConnectionLost = function (responseObject) {
+              console.log("onConnection Lost ", responseObject);
+            };
 
-              mqttClient.connect(options);
+            return defer.promise;
 
-              mqttClient.onMessageArrived = function (message) {
-                try {
-                  var topic = message.destinationName;
-                  var payload = message.payloadString;
-                  var ev = events.message || function () {
-                      console.log("EV");
-                    };
-
-                  $log.info("onMessageArrived topic = ", topic);
-                  ev.apply(null, [topic, payload, message]);
-                  var ev2 = events[topic.toString()] || function () {
-                      console.log("EV2");
-                    };
-                  ev2.apply(null, [payload, message]);
-                }
-                catch (ex) {
-                  $log.error("mqttProvider error", ex);
-                }
-              };
-
-              mqttClient.onConnectionLost = function (responseObject) {
-                console.log("onConnection Lost ", responseObject);
-              };
-
-              return defer.promise;
-
-            }
           }
         };
       };

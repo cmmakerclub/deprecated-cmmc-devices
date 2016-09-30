@@ -230,8 +230,12 @@
 
 
       $scope.operations = {
-        "subscribe": myMqtt.subscribe("/CMMC/#"),
-        "connect": myMqtt.connect(),
+        "subscribe": function () {
+          return myMqtt.subscribe("/CMMC/#")
+        },
+        "connect": function () {
+          return myMqtt.connect()
+        },
         "config": $scope.config,
         "disconnect": angular.noop
       };
