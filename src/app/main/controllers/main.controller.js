@@ -8,6 +8,15 @@
     })
     .controller('MainController', MainController);
 
+  function isValidJson(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   var buildToggler = function buildToggler(navID, $mdSidenav, $mdUtil, $log) {
     var callback = function () {
       $mdSidenav(navID)
@@ -45,8 +54,7 @@
     });
 
     // addListener();
-
-    // load config
+// load config
     $scope.storage = $localStorage.$default({
       config: {
         host: 'mqtt.cmmc.io',
@@ -76,18 +84,15 @@
 
     $scope.config = angular.extend({}, $scope.storage.config);
 
-    $scope.onlineStatus = "ALL";
-    $scope.filterDevice = {};
-    $scope.filterDevice.name = "";
-
-    function isValidJson(str) {
-      try {
-        JSON.parse(str);
-      } catch (e) {
-        return false;
+    angular.extend($scope, {
+      onlineStatus: "ALL",
+      filterDevice: {
+        name: ""
+      },
+      '$scope': {
+        filterDevice: {}
       }
-      return true;
-    }
+    });
 
     var addListener = function () {
       var onMsg = function (topic, payload) {
@@ -224,16 +229,6 @@
       });
 
 
-      var utils = {
-        "disconnectGen": function (client) {
-          var mqttClient = client;
-          return function () {
-            $log.info("disconnection called");
-            mqttClient.disconnect();
-          };
-        }
-      };
-
       $scope.operations = {
         "subscribe": myMqtt.subscribe("/CMMC/#"),
         "connect": myMqtt.connect(),
@@ -259,7 +254,10 @@
           }
           else {
             $scope.status = "READY";
-            $scope.operations.disconnect = utils.disconnectGen(mqttClient);
+            $scope.operations.disconnect = function () {
+              $log.info("disconnection called");
+              mqttClient.disconnect();
+            };
           }
         });
     };
