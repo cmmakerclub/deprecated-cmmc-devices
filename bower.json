@@ -1,6 +1,6 @@
 {
-  "name": "gulp-angular-mqtt-ws",
-  "version": "0.0.0",
+  "name": "cmmc-devices",
+  "version": "0.0.1",
   "dependencies": {
     "angular": "~1.4.0",
     "angular-animate": "~1.4.0",
