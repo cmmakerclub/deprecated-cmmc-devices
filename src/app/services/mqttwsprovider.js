@@ -104,11 +104,12 @@ angular.module('cmmcDevices')
                 var topic = message.destinationName;
                 var payload = message.payloadString;
                 var ev = events.message || angular.noop;
-                // $log.info("onMessageArrived topic = ", topic);
-                ev.apply(null, [topic, payload, message]);
-
-                // var ev2 = events[topic.toString()] || angular.noop;
-                // ev2.apply(null, [payload, message]);
+                try {
+                  ev.apply(null, [topic, payload, message]);
+                }
+                catch (ex2) {
+                  console.log(ex2);
+                }
               }
               catch (ex) {
                 $log.error("[error] skipped. still running..", ex);
