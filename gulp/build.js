@@ -14,9 +14,9 @@ gulp.task('partials', ['markups'], function () {
     path.join(conf.paths.tmp, '/serve/app/**/*.html')
   ])
     .pipe($.minifyHtml({
-      empty: true,
-      spare: true,
-      quotes: true
+      empty: false,
+      spare: false,
+      quotes: false 
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
       module: 'cmmcDevices',
