@@ -117,6 +117,13 @@
                 online: _payload.status !== "DEAD"
               });
 
+              if (_payload.d.door_open == true) {
+                _payload.status = "DEAD";
+              }
+              else {
+                _payload.status = "ONLINE";
+              }
+
               _private.devices[_device_id_value] = _payload;
               delete _private.devices.undefined;
 
@@ -186,6 +193,8 @@
       if (!isFirstLogin()) {
         return;
       }
+
+      console.log('[] showFirstPopUp');
 
       $mdDialog.show({
         controller: FirstPopupDialogController,
