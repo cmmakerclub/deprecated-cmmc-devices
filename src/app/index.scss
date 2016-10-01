@@ -53,6 +53,12 @@ section.main-section{
 
   .item {
     text-align: center;
+    min-height: 200px;
+  }
+
+  .item-status {
+    font-size: 2em;
+
   }
 
   md-card {
@@ -94,6 +100,11 @@ md-content {
 
 md-virtual-repeat-container {
   border: solid 1px grey;
+}
+
+.device-name {
+  padding-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .md-virtual-repeat-container .md-virtual-repeat-offsetter {
