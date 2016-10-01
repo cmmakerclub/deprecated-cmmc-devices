@@ -111,7 +111,7 @@ angular.module('cmmcDevices')
                 // ev2.apply(null, [payload, message]);
               }
               catch (ex) {
-                $log.error("mqttProvider error", ex);
+                $log.error("[error] skipped. still running..", ex);
               }
             };
 
