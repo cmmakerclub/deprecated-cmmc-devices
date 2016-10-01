@@ -28,9 +28,9 @@
       <sidebar-mqtt-config/>
     </div>
 
-    <md-content flex layout-padding layout-align="center">
-      {{ status }}
-    </md-content>
+    <!--<md-content  flex layout-padding layout-align="center">-->
+      <!--{{ status }}-->
+    <!--</md-content>-->
 
     <div class="devices" layout-align="center">
       <md-card class="item" ng-class="device.status"
@@ -39,7 +39,7 @@
           <div class="device-name">Item No. 481201 </div>
 
           <div class="item-status" layout-align="center center">
-            <span ng-hide="device.status">NOT </span>DETECTED
+            <span ng-show="device.d.door_open">NOT </span>DETECTED
           </div>
 
           <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
