@@ -176,12 +176,13 @@
     };
 
     var isFirstLogin = function () {
-      var firstLogin =
-        (!$scope.config.host != null && $scope.config.host != "") == false;
-      return false;
+      var firstLogin = ($scope.config.host == null || $scope.config.host == "");
+      return true;
+      return firstLogin;
     };
 
     $scope.showFirstPopup = function (ev) {
+      console.log('showFirstPopUp');
       if (!isFirstLogin()) {
         return;
       }
