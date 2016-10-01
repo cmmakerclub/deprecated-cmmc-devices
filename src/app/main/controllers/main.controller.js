@@ -189,7 +189,7 @@
 
     var isFirstLogin = function () {
       var firstLogin = ($scope.config.host == null || $scope.config.host == "");
-      return true;
+      return false;
       return firstLogin;
     };
 

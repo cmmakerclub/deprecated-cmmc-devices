@@ -104,7 +104,6 @@ angular.module('cmmcDevices')
                 var topic = message.destinationName;
                 var payload = message.payloadString;
                 var ev = events.message || angular.noop;
-                console.log(payload);
                 ev.apply(null, [topic, payload, message]);
               }
               catch (ex) {
