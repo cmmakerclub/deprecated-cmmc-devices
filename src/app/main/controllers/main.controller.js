@@ -160,7 +160,12 @@
         }
       };
 
-      myMqtt.on("message", onMsg);
+      try {
+        myMqtt.on("message", onMsg);
+      }
+      catch (ex) {
+        console.log(ex);
+      }
     };
 
     $scope.showDetail = function (targetEvent, deviceUUIDuuid) {
