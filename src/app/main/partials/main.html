@@ -13,10 +13,10 @@
         </md-input-container>
 
         <md-input-container>
-          <md-select name="onlineStatus" ng-model="onlineStatus" required>
-            <md-option value="ALL">All devices</md-option>
-            <md-option value="ONLINE">Online</md-option>
-            <md-option value="DEAD">Offline</md-option>
+          <md-select aria-label="online status" name="onlineStatus" ng-model="onlineStatus" required>
+            <md-option value="ALL">All devices ({{ main.system.all_devices || 0 }})</md-option>
+            <md-option value="ONLINE">Online ({{ main.system.online_devices}})</md-option>
+            <md-option value="DEAD">Offline ({{ main.system.offline_devices}})</md-option>
           </md-select>
         </md-input-container>
 
@@ -33,22 +33,17 @@
     <!--</md-content>-->
 
     <div class="devices" layout-align="center">
+      {{ main.LWT }}
+      <div ng-hide="main.system">Connecting...</div>
+      <div ng-show="main.system">SYSTEM = {{ main.system }}</div>
       <md-card class="item" ng-class="device.status"
                ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
         <div class="thumbnail" flex="100" layout="column" layout-align="center center">
-          <div class="device-name">Item No. 481201 </div>
-
-          <div class="item-status" layout-align="center center">
-            <b><span ng-show="device.d.door_open">NOT </span> <span>DETECTED</span></b>
-          </div>
-
-          <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
-          <!--<div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>-->
-          <!--<div>{{ device.d.ip || device.info.ip }}</div>-->
-          <!--<div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>-->
-          <!--<divn ng-show="{{device.info.sensor}}">{{ device.info.sensor || device.d.sensor || "?" }}</divn>-->
-          <!--<div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>-->
-          <!--<div>esp8266/{{ device.info.id || device.d.id }}/command</div>                            -->
+          <div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>
+          <div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>
+          <div>{{ device.d.ip || device.info.ip }}</div>
+          <div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>
+          <div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>
         </div>
         <div class="md-actions" layout="row" layout-align="end center">
           <md-button ng-click="showDetail($event, key)">Detail</md-button>

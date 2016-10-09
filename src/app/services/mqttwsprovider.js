@@ -72,7 +72,7 @@ angular.module('cmmcDevices')
             };
 
             var onFailure = function (message) {
-              $log.error("[86]..FAILED....", message);
+              $log.info("[86]..FAILED....", message);
               // $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
               defer.reject(message);
             };
@@ -107,7 +107,7 @@ angular.module('cmmcDevices')
                 ev.apply(null, [topic, payload, message]);
               }
               catch (ex) {
-                $log.error("[error] skipped. still running..", ex);
+                $log.info("[error] skipped. still running..", ex);
               }
             };
 
