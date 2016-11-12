@@ -29,28 +29,34 @@
     </div>
 
     <!--<md-content  flex layout-padding layout-align="center">-->
-      <!--{{ status }}-->
+    <!--{{ status }}-->
     <!--</md-content>-->
 
     <div class="devices" layout-align="center">
-      {{ main.LWT }}
+      <!--<div flex-auto>{{ main.LWT }}</div>-->
       <div ng-hide="main.system">Connecting...</div>
-      <div ng-show="main.system">SYSTEM = {{ main.system }}</div>
-      <md-card class="item" ng-class="device.status"
-               ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
-        <div class="thumbnail" flex="100" layout="column" layout-align="center center">
-          <div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>
-          <div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>
-          <div>{{ device.d.ip || device.info.ip }}</div>
-          <div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>
-          <div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>
-        </div>
-        <div class="md-actions" layout="row" layout-align="end center">
-          <md-button ng-click="showDetail($event, key)">Detail</md-button>
-        </div>
-      </md-card>
+      <div flex-auto ng-show="main.system">SYSTEM = {{ main.system }}</divf>
+        <md-card class="item" ng-class="device.status"
+                 ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
 
-    </div>
+          <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline">{{ device.d.myName }}</span>
+            </md-card-title-text>
+          </md-card-title>
+          <!--<div class="thumbnail" flex="100" layout="column" layout-align="center center">-->
+          <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
+          <!--<div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>-->
+          <!--<div>{{ device.d.ip || device.info.ip }}</div>-->
+          <!--<div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>-->
+          <!--<div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>-->
+          <!--</div>-->
+          <!--<div class="md-actions" layout="row" layout-align="end center">-->
+          <!--<md-button ng-click="showDetail($event, key)">Detail</md-button>-->
+          <!--</div>-->
+        </md-card>
+
+      </div>
   </section>
 
   <div ng-init="showFirstPopup($event)"></div>

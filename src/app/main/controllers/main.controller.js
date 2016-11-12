@@ -58,7 +58,7 @@
       config: {
         host: 'mqtt.espert.io',
         port: 8000,
-        clientId: "CMMC-" +Math.random()
+        clientId: "CMMC-" + Math.random()
       }
     });
 
@@ -92,70 +92,72 @@
 
     var addListener = function () {
       var onMsg = function (topic, payload) {
-          var topics = topic.split("/");
-          var max_depth = topics.length - 1;
-          var incomming_topic = topics[max_depth];
-          var lwt_values, lwt_status, device_id;
+        var topics = topic.split("/");
+        var max_depth = topics.length - 1;
+        var incomming_topic = topics[max_depth];
+        var lwt_values, device_status, device_id;
 
-          // protocol: /prefix/device_uid/online
-          // protocol: /prefix/device_uid/status
-          if (incomming_topic === "status") {
-            if (isValidJson(payload)) {
-          //     var _payload = JSON.parse(payload);
-          //     var _device_id_value = (_payload.info && _payload.info.device_id);
-          //
-          //     angular.extend(_payload, {
-          //       status: (_private.LWT[_device_id_value]) || "ONLINE" || "UNKNOWN",
-          //       online: (_payload.status !== "DEAD")
-          //     });
-          //
-          //     _private.devices[_device_id_value] = _payload;
-          //
-          //
-          //     delete _private.devices.undefined;
-          //     console.log("LWT KEYS = ", Object.keys(_private.LWT));
-          //     console.log("DEVICES KEYS = ", Object.keys(_private.devices));
-          //
-          //     _private.system = {
-          //       online_devices: Object.keys(_private.devices).length,
-          //       offline_devices: Object.keys(_private.LWT).length,
-          //       all_devices: (Object.keys(_private.LWT).length || 0) + Object.keys(_private.devices).length,
-          //     };
-          //
-          //     $scope.$apply();
-          //   }
-          //   else {
-          //     $log.error("INVALID JSON => ", payload);
-            }
-          }
-          else if (incomming_topic == "online") {
-            /*
-             * DEAD|DEVICE_ID|started_will_millis
-             */
+        // protocol: /prefix/device_uid/lwt
+        // protocol: /prefix/device_uid/status
+        if (incomming_topic === "status") {
+          if (isValidJson(payload)) {
+            var _payload = JSON.parse(payload);
+            var _device_id_value = (_payload.info && _payload.info.device_id);
+            // //
+            //     angular.extend(_payload, {
+            //       status: (_private.LWT[_device_id_value]) || "ONLINE" || "UNKNOWN",
+            //       online: (_payload.status !== "DEAD")
+            //     });
 
-            lwt_values = payload.split("|");
-            lwt_status = lwt_values[0];
-            device_id = lwt_values[1];
+            _private.devices[_device_id_value] = _payload;
 
-            if (device_id === lwt_status) {
-              lwt_status = "online";
-            }
+            //
+            //     delete _private.devices.undefined;
+            //     console.log("LWT KEYS = ", Object.keys(_private.LWT));
+            //     console.log("DEVICES KEYS = ", Object.keys(_private.devices));
+            //
+            _private.system = {
+              online_devices: Object.keys(_private.devices).length,
+              offline_devices: Object.keys(_private.LWT).length,
+              all_devices: (Object.keys(_private.LWT).length || 0) + Object.keys(_private.devices).length,
+            };
 
-            _private.LWT[device_id] = lwt_status;
-            if (_private.devices[device_id]) {
-              _private.devices[device_id].status = lwt_status;
-              $log.debug(_private);
-              $scope.$apply();
-            }
-
-            console.log(incomming_topic);
-            console.log(">", lwt_values, ">", lwt_status);
-            console.log(_private.devices);
-
+            $scope.$apply();
           }
           else {
-            // TODO: Unhandled topic
+            $log.error("INVALID JSON => ", payload);
           }
+        }
+        else if (incomming_topic == "lwt") {
+          /*
+           * DEAD|DEVICE_ID|started_will_millis
+           * ONLINE|DEVICE_ID|started_will_millis
+           */
+          lwt_values = payload.split("|");
+          device_id = lwt_values[1];
+          device_status = lwt_values[0];
+
+          _private.LWT[device_id] = device_status;
+
+          // $log.debug("lwt = ", lwt_values);
+
+          if (_private.devices[device_id]) {
+            _private.devices[device_id].online = device_status;
+            $scope.$apply();
+            console.log("in if");
+          }
+          else {
+            console.log("147 in else");
+          }
+
+          console.log(incomming_topic);
+          console.log(">", lwt_values, ">", device_status);
+          console.log(_private.devices);
+
+        }
+        else {
+          // TODO: Unhandled topic
+        }
       };
 
       try {
