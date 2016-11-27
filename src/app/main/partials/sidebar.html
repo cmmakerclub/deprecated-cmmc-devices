@@ -5,7 +5,8 @@
       Config [Sidebar]
     </md-toolbar>
     <md-content layout-padding class="autoScroll" md-dynamic-height>
-      <form name="newConfig" ng-submit="save(config)">
+      {{ save }}
+      <form name="sidebarConfig" ng-submit="save(config)">
         <div ng-include="'app/main/partials/_form_item.html'"></div>
         <md-input-container>
     </md-content>
