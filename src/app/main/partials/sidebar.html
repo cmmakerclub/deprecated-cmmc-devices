@@ -5,8 +5,11 @@
       Configuration
     </md-toolbar>
     <md-content layout-padding class="autoScroll" md-dynamic-height>
-        <div ng-include="'app/main/partials/_form_item.html'"></div>
+      <div ng-include="'app/main/partials/_form_item.html'"></div>
+      <md-input-container>
+        <md-button class="md-raised" ng-click="closeAndSaveNewConfig(config)">Save</md-button>
+        <md-button class="md-raised md-warn" ng-click="closeNav()">Cancel</md-button>
+      </md-input-container>
     </md-content>
-
   </md-sidenav>
 </section>

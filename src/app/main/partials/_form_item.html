@@ -8,6 +8,11 @@
   <input ng-model="config.port" required>
 </md-input-container>
 
+<md-input-container>
+  <label>Prefix</label>
+  <input ng-model="config.prefix" required>
+</md-input-container>
+
 <md-input-container ng-show="data.cb_auth">
   <label>Username</label>
   <input ng-model="config.username" name="cmmc-username">
@@ -22,6 +27,7 @@
   <label>clientId</label>
   <input ng-model="config.clientId" type="text" required>
 </md-input-container>
+
 
 <div class="cmmc-checkboxes" flex="100">
   <md-checkbox aria-labelledby="label" ng-init="data.cb_auth=true" ng-model="data.cb_auth" aria-label="Checkbox 2"
@@ -45,7 +51,4 @@
   </md-checkbox>
 </div>
 
-<md-input-container>
-  <md-button class="md-raised" ng-click="closeAndSaveNewConfig(config)">Save</md-button>
-  <md-button class="md-raised md-warn" ng-click="closeNav()">Cancel</md-button>
-</md-input-container>
+
