@@ -26,7 +26,7 @@ html {
 }
 
 .thumbnail {
-  height: 200px;
+  min-height: 80px;
 
   img.pull-right {
     width: 50px;
@@ -58,6 +58,11 @@ section.main-section{
 
   .item-status {
     font-size: 1.5em;
+  }
+
+  .item-container {
+    background: lightblue;
+    width: 950px;
   }
 
   md-card {
@@ -108,6 +113,9 @@ md-virtual-repeat-container {
 
 .md-virtual-repeat-container .md-virtual-repeat-offsetter {
   padding-left: 16px;
+}
+
+.main-content {
 }
 
 /*.dialog-content {

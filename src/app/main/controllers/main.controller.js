@@ -56,9 +56,9 @@
     // addListener();
     $scope.storage = $localStorage.$default({
       config: {
-        host: 'mqtt.espert.io',
+        host: '',
         port: 8000,
-        clientId: "CMMC-" + Math.random()
+        clientId:''
       }
     });
 
@@ -70,6 +70,7 @@
     };
 
     $scope.closeAndSaveNewConfig = function (newConfig) {
+      console.log("close & save");
       $mdSidenav('right').close()
         .then(function () {
           $scope.storage.config = newConfig;
@@ -103,19 +104,10 @@
           if (isValidJson(payload)) {
             var _payload = JSON.parse(payload);
             var _device_id_value = (_payload.info && _payload.info.device_id);
-            // //
-            //     angular.extend(_payload, {
-            //       status: (_private.LWT[_device_id_value]) || "ONLINE" || "UNKNOWN",
-            //       online: (_payload.status !== "DEAD")
-            //     });
-
             _private.devices[_device_id_value] = _payload;
 
-            //
-            //     delete _private.devices.undefined;
-            //     console.log("LWT KEYS = ", Object.keys(_private.LWT));
-            //     console.log("DEVICES KEYS = ", Object.keys(_private.devices));
-            //
+             delete _private.devices.undefined;
+
             _private.system = {
               online_devices: Object.keys(_private.devices).length,
               offline_devices: Object.keys(_private.LWT).length,
@@ -150,10 +142,9 @@
             console.log("147 in else");
           }
 
-          console.log(incomming_topic);
-          console.log(">", lwt_values, ">", device_status);
-          console.log(_private.devices);
-
+          // console.log(incomming_topic);
+          // console.log(">", lwt_values, ">", device_status);
+          // console.log(_private.devices);
         }
         else {
           // TODO: Unhandled topic
@@ -188,15 +179,15 @@
     };
 
     var isFirstLogin = function () {
-      var firstLogin = ($scope.config.host == null || $scope.config.host == "");
-      return true;
+      var is_firstLogin = ($scope.config.host == null || $scope.config.host == "");
+      return is_firstLogin;
     };
 
     $scope.showFirstPopup = function (ev) {
       console.log('showFirstPopUp');
-      // if (!isFirstLogin()) {
-      //   return;
-      // }
+      if (!isFirstLogin()) {
+        return;
+      }
       console.log('[] showFirstPopUp');
 
       $mdDialog.show({
@@ -289,11 +280,12 @@
 
     function FirstPopupDialogController($scope, $mdDialog) {
       $scope.config = {
-        host: 'mqtt.espert.io',
+        host: 'mqtt.cmmc.io',
         port: 8000
       };
 
       $scope.save = function (newConfig) {
+        console.log("save fn", newConfig);
         $mdDialog.hide(newConfig);
       };
     }

@@ -32,7 +32,7 @@
 </div>
 
 <div class="cmmc-checkboxes" flex="100">
-  <md-checkbox ng-model="data.cb_clientId" aria-label="Checkbox 2" class="md-warn md-align-top-left">
+  <md-checkbox ng-model="data.cb_clientId" aria-label="ClientId" class="md-warn md-align-top-left">
     <!-- {{ data.cb_clientId }} -->
     clientId
   </md-checkbox>
@@ -45,6 +45,6 @@
 </div>
 
 <md-input-container>
-  <md-button class="md-raised">Save</md-button>
+  <md-button class="md-raised" ng-click="save(config)">Save</md-button>
   <md-button class="md-raised md-warn" ng-click="closeNav()">Cancel</md-button>
 </md-input-container>

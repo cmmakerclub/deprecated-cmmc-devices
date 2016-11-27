@@ -3,7 +3,6 @@
     <my-nav-bar creationDate="main.creationDate"/>
   </header>
   <section class="main-section" md-dynamic-height>
-
     <div layout="row" layout-align="end center">
 
       <div layout="row" flex="100" layout-align="end bottom">
@@ -25,7 +24,7 @@
         </md-button>
 
       </div>
-      <sidebar-mqtt-config/>
+      <sidebar-mqtt-config></sidebar-mqtt-config>
     </div>
 
     <!--<md-content  flex layout-padding layout-align="center">-->
@@ -33,30 +32,34 @@
     <!--</md-content>-->
 
     <div class="devices" layout-align="center">
-      <!--<div flex-auto>{{ main.LWT }}</div>-->
+      <!--<div>{{ main.devices }}</div>-->
+      <div>{{ main.LWT }}</div>
       <div ng-hide="main.system">Connecting...</div>
-      <div flex-auto ng-show="main.system">SYSTEM = {{ main.system }}</divf>
-        <md-card class="item" ng-class="device.status"
-                 ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
+      <div>{{ config.host }}:{{config.port}}</div>
+      <div class="item-container" flex-auto ng-show="main.system">SYSTEM = {{ main.system }}</div>
+      <md-card class="item" ng-class="device.status"
+               ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
 
-          <md-card-title>
-            <md-card-title-text>
-              <span class="md-headline">{{ device.d.myName }}</span>
-            </md-card-title-text>
-          </md-card-title>
-          <!--<div class="thumbnail" flex="100" layout="column" layout-align="center center">-->
-          <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
-          <!--<div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>-->
-          <!--<div>{{ device.d.ip || device.info.ip }}</div>-->
-          <!--<div ng-show="{{!!device.d.temp}}"> temp={{ device.d.temp}} humid={{ device.d.humid}}</div>-->
-          <!--<div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>-->
-          <!--</div>-->
-          <!--<div class="md-actions" layout="row" layout-align="end center">-->
-          <!--<md-button ng-click="showDetail($event, key)">Detail</md-button>-->
-          <!--</div>-->
-        </md-card>
-
-      </div>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">{{ device.d.myName }}</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-content flex layout-padding>
+          <div class="thumbnail" flex="100" layout="column" layout-align="center center">
+            <div>[client Id => {{device.info.client_id}}]</div>
+            <div>[ONLINE? => {{ main.LWT[device.info.client_id]}}]</div>
+            <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
+            <div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>
+            <div>{{ device.d.ip || device.info.ip }}</div>
+            <div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>
+          </div>
+          <div class="md-actions" layout="row" layout-align="end center">
+            <md-button ng-click="showDetail($event, key)">Detail</md-button>
+          </div>
+        </md-content>
+      </md-card>
+    </div>
   </section>
 
   <div ng-init="showFirstPopup($event)"></div>

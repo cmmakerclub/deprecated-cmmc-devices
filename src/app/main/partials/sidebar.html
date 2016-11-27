@@ -1,12 +1,13 @@
 <section>
-  <md-sidenav  md-dynamic-height class="md-sidenav-right md-whiteframe-z2" md-component-id="right" layout-align="start center">
+  <md-sidenav md-dynamic-height class="md-sidenav-right md-whiteframe-z2" md-component-id="right"
+              layout-align="start center">
     <md-toolbar class="md-theme-light" layout="row" layout-align="center center">
-      Config SSS
+      Config [Sidebar]
     </md-toolbar>
     <md-content layout-padding class="autoScroll" md-dynamic-height>
-      <form ng-submit="closeAndSaveNewConfig(config)">
+      <form name="newConfig" ng-submit="save(config)">
         <div ng-include="'app/main/partials/_form_item.html'"></div>
-      </form>
+        <md-input-container>
     </md-content>
 
   </md-sidenav>
