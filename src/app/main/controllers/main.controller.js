@@ -8,6 +8,12 @@
   })
   .controller('MainController', MainController);
 
+  var default_config= {
+      host: 'mqtt.cmmc.io',
+      port: 8000,
+      clientId: "CMMC-"+ (Math.random()*100)
+  };
+
   function isValidJson (str) {
     try {
       JSON.parse(str);
@@ -57,8 +63,8 @@
     $scope.storage = $localStorage.$default({
       config: {
         host: '',
-        port: 8000,
-        clientId: ''
+        port: 8100,
+        clientId: "CMMC-"+ (Math.random()*100)
       }
     });
 
@@ -270,9 +276,6 @@
       $scope.devices = devices;
       $scope.deviceUUID = deviceUUID;
 
-      // $scope.save = function() {
-      //   console.log("SAVE ");
-      // }
       $scope.hide = function (config) {
         $mdDialog.hide(config);
       };
@@ -283,10 +286,7 @@
     }
 
     function FirstPopupDialogController ($scope, $mdDialog) {
-      $scope.config = {
-        host: 'mqtt.cmmc.io',
-        port: 8000
-      };
+      $scope.config = default_config;
 
       $scope.closeAndSaveNewConfig = function(newConfig) {
         console.log("FirstPopUpDialog:: closNav");
