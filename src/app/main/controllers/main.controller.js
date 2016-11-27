@@ -63,6 +63,7 @@
     });
 
     $scope.closeNav = function () {
+      console.log("close nave");
       $mdSidenav('right').close()
       .then(function () {
         $scope.config = angular.extend({}, $scope.storage.config);
@@ -74,7 +75,7 @@
       $mdSidenav('right').close()
       .then(function () {
         $scope.storage.config = newConfig;
-        $scope.operations.disconnect();
+        $scope.disconnect();
         $scope.connect();
       });
     };
@@ -269,6 +270,9 @@
       $scope.devices = devices;
       $scope.deviceUUID = deviceUUID;
 
+      // $scope.save = function() {
+      //   console.log("SAVE ");
+      // }
       $scope.hide = function (config) {
         $mdDialog.hide(config);
       };
@@ -284,10 +288,12 @@
         port: 8000
       };
 
-      $scope.save = function (newConfig) {
+      $scope.closeAndSaveNewConfig = function(newConfig) {
+        console.log("FirstPopUpDialog:: closNav");
         console.log("save fn", newConfig);
         $mdDialog.hide(newConfig);
-      };
+      }
+
     }
 
     if (!isFirstLogin()) {

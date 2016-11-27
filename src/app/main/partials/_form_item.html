@@ -10,12 +10,12 @@
 
 <md-input-container ng-show="data.cb_auth">
   <label>Username</label>
-  <input ng-model="config.username">
+  <input ng-model="config.username" name="cmmc-username">
 </md-input-container>
 
 <md-input-container ng-show="data.cb_auth">
   <label>Password</label>
-  <input ng-model="config.password" type="password">
+  <input ng-model="config.password" name="cmmc-password">
 </md-input-container>
 
 <md-input-container ng-show="data.cb_clientId">
@@ -24,7 +24,7 @@
 </md-input-container>
 
 <div class="cmmc-checkboxes" flex="100">
-  <md-checkbox aria-labelledby="label" ng-init="data.cb_auth=false" ng-model="data.cb_auth" aria-label="Checkbox 2"
+  <md-checkbox aria-labelledby="label" ng-init="data.cb_auth=true" ng-model="data.cb_auth" aria-label="Checkbox 2"
                class="md-warn md-align-top-left">
     <!-- {{ data.cb_auth }} -->
     username & password
@@ -32,19 +32,20 @@
 </div>
 
 <div class="cmmc-checkboxes" flex="100">
-  <md-checkbox ng-model="data.cb_clientId" aria-label="ClientId" class="md-warn md-align-top-left">
+  <md-checkbox ng-init="data.cb_clientId=true" ng-model="data.cb_clientId" aria-label="ClientId"
+               class="md-warn md-align-top-left">
     <!-- {{ data.cb_clientId }} -->
     clientId
   </md-checkbox>
 </div>
 
 <div class="cmmc-checkboxes" flex="100">
-  <md-checkbox ng-model="data.ssl" aria-label="SSL" class="md-warn md-align-top-left">
+  <md-checkbox ng-init="data.ssl=false" ng-model="data.ssl" aria-label="SSL" class="md-warn md-align-top-left">
     SSL
   </md-checkbox>
 </div>
 
 <md-input-container>
-  <md-button class="md-raised" ng-click="save(config)">Save</md-button>
+  <md-button class="md-raised" ng-click="closeAndSaveNewConfig(config)">Save</md-button>
   <md-button class="md-raised md-warn" ng-click="closeNav()">Cancel</md-button>
 </md-input-container>
