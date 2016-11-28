@@ -38,9 +38,9 @@
       <!--<div>{{ main.devices }}</div>-->
       <!--<div>{{ main.LWT }}</div>-->
       <div ng-hide="main.system">Connecting...</div>
-      <div>{{ config.host }}:{{config.port}}</div>
+      <!--<div>{{ config.host }}:{{config.port}}</div>-->
       <!--<div class="item-container" flex-auto ng-show="main.system">-->
-        <!--SYSTEM = {{ main.system }}-->
+      <!--SYSTEM = {{ main.system }}-->
       <!--</div>-->
       <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status"
                ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
@@ -52,8 +52,8 @@
         </md-card-title>
         <md-content layout-padding>
           <div class="thumbnail" flex="100" layout="column" layout-align="center center">
-            <div>[client Id => {{device.info.client_id}}]</div>
-            <div>[ONLINE? => {{ main.LWT[device.info.client_id] }}]</div>
+            <!--<div>[client Id => {{device.info.client_id}}]</div>-->
+            <!--<div>[ONLINE? => {{ main.LWT[device.info.client_id] }}]</div>-->
             <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
             <div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>
             <div>{{ device.d.ip || device.info.ip }}</div>
