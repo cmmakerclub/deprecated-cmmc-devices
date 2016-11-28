@@ -69,6 +69,8 @@
       }
     });
 
+    console.log($scope.storage);
+
     $scope.closeNav = function () {
       console.log("close nave");
       $mdSidenav('right').close()
@@ -99,6 +101,7 @@
       }
     });
 
+console.log($scope.storage);
     var addListener = function () {
       var onMsg = function (topic, payload) {
         var topics = topic.split("/");
@@ -208,7 +211,8 @@
       .then(function (newConfig) {
         $scope.config = newConfig;
         $scope.storage.config = newConfig;
-        $mdSidenav('right').open();
+        $scope.disconnect();
+        $scope.connect();
       }, function () {
         $log.debug("CALLING CONNECT..");
         $scope.connect();
@@ -230,6 +234,17 @@
       return _private.devices;
     };
 
+    $scope.operations = {
+      "subscribe": function () {
+        return myMqtt.subscribe("/CMMC/#")
+      },
+      "connect": function () {
+        return myMqtt.connect()
+      },
+      "config": $scope.config,
+      "disconnect": angular.noop
+    };
+
     //asynchronously
     $scope.connect = function () {
       $scope.status = "CONNECTING...";
@@ -245,18 +260,7 @@
           delete $scope.config[key];
         }
       });
-
-
-      $scope.operations = {
-        "subscribe": function () {
-          return myMqtt.subscribe("/CMMC/#")
-        },
-        "connect": function () {
-          return myMqtt.connect()
-        },
-        "config": $scope.config,
-        "disconnect": angular.noop
-      };
+      $scope.operations.config = $scope.config;
 
       myMqtt.create($scope.operations.config)
       .then($scope.operations.connect)
