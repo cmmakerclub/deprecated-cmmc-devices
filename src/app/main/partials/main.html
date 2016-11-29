@@ -40,8 +40,7 @@
         md-gutter="12px" md-gutter-gt-sm="8px">
 
         <md-grid-tile
-          md-rowspan="2" md-colspan="2"
-          class="green"
+          md-rowspan="1" md-colspan="1"
           ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
           <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status">
             <md-card-title>
@@ -93,7 +92,7 @@
             </md-content>
           </md-card>
           <md-grid-tile-footer>
-            <h3>#{{key}}: (1r x 1c)</h3>
+            <h3>#{{key}}: {{ device.d.myName }}</h3>
           </md-grid-tile-footer>
         </md-grid-tile>
       </md-grid-list>

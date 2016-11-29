@@ -21,7 +21,7 @@ var buildToggler = function buildToggler (navID, $mdSidenav, $mdUtil, $log) {
 };
 
 var getObjectSize = function (object) {
-  return Object.keys(object) || 0;
+  return Object.keys(object).length || 0;
 };
 
 (function () {
