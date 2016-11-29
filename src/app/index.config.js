@@ -8,7 +8,7 @@
   /** @ngInject */
   function config($logProvider, toastr, $mdThemingProvider) {
     // Enable log
-    $logProvider.debugEnabled(true);
+    $logProvider.debugEnabled(false);
 
     // Set options third-party lib
     toastr.options.timeOut = 3000;

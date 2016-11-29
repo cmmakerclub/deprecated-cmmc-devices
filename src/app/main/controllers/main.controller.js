@@ -149,7 +149,7 @@ var getObjectSize = function (object) {
 
     //asynchronously
     $scope.connect = function () {
-      console.log("[0] CONNECT ... ");
+      $log.debug("[0] CONNECT ... ");
       $scope.status = "CONNECTING...";
 
       myMqtt.create($scope.config)

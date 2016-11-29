@@ -96,7 +96,7 @@ angular.module('cmmcDevices')
               });
             }
 
-            $log.info("MQTT CONNECTION OPTIONS = ", options);
+            $log.debug("MQTT CONNECTION OPTIONS = ", options);
 
 
             mqttClient.onMessageArrived = function (message) {
