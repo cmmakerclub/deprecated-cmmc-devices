@@ -35,7 +35,7 @@ var getObjectSize = function (object) {
   .controller('MainController', MainController);
 
   var default_config = {
-    host: 'mqtt.espert.io',
+    host: 'mqtt.cmmc.io',
     port: 8000,
     prefix: 'CMMC',
     clientId: "CMMC-" + (Math.random() * 100)
@@ -157,8 +157,9 @@ var getObjectSize = function (object) {
         return myMqtt.connect();
       })
       .then(function () {
-        myMqtt.subscribe("/CMMC/+/status");
-        myMqtt.subscribe("/CMMC/+/lwt");
+        var topic_prefix = $scope.config.prefix;
+        myMqtt.subscribe(topic_prefix + "/+/status");
+        myMqtt.subscribe(topic_prefix + "/+/lwt");
         // myMqtt.subscribe("/CMMC/+/$/#");
       })
       .then(function (mqttClient) {
@@ -172,6 +173,7 @@ var getObjectSize = function (object) {
             if (topics[0] === "") {
               topics.shift();
             }
+            $log.info(topics);
             return topics;
           })
           .then(function (topics) {

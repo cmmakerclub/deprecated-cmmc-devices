@@ -72,7 +72,7 @@
                 run time
               </div>
               <div flex="60">
-                {{ ((device.d.millis/1000)/(86400)).toFixed(5) }} days
+                {{ ((device.d.millis/1000*24)/(86400)).toFixed(5) }} hours
               </div>
             </div>
             <div layout="row">
