@@ -17,9 +17,9 @@
     toastr.options.progressBar = true;
 
 
-    // $mdThemingProvider.theme('default')
-    //     .primaryPalette('red')
-    //     .accentPalette('orange');
+    $mdThemingProvider.theme('default')
+        .primaryPalette('cyan')
+        .accentPalette('orange');
   }
 
 })();

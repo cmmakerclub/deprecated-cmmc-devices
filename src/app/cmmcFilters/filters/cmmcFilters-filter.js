@@ -8,41 +8,45 @@
  * Filter in the cmmcDevices.
  */
 angular.module('cmmcDevices')
-  .filter('status', function () {
-    return function (input, status) {
+.filter('status', function () {
+  return function (input, status) {
 
-      if (status == "ALL") {
-        return input;
+    if (status == "ALL") {
+      return input;
+    }
+
+    console.log("status...");
+    var result = {};
+    angular.forEach(input, function (value, key) {
+      console.log("filter: value.status", value.status);
+      if (value.status == status) {
+        result[key] = value;
       }
-
-      var result = {};
-      angular.forEach(input, function (value, key) {
-        if (value.status == status) {
-          result[key] = value;
-        }
-      });
-      return result;
-    };
-  })
-  .filter('name', function () {
-    return function (input, name) {
-      var result = {};
-      angular.forEach(input, function (value, key) {
+    });
+    return result;
+  };
+})
+.filter('name', function () {
+  return function (input, name) {
+    var result = {};
+    angular.forEach(input, function (value, key) {
+      if (value.d && value.d.myName !== undefined) {
         if (value.d.myName.toLowerCase().indexOf(name.toLowerCase()) > -1) {
           result[key] = value;
         }
-      });
-      return result;
-    };
-  })
-  .filter('isEmpty', function () {
-    var bar;
-    return function (obj) {
-      for (bar in obj) {
-        if (obj.hasOwnProperty(bar)) {
-          return false;
-        }
       }
-      return true;
-    };
-  });
+    });
+    return result;
+  };
+})
+.filter('isEmpty', function () {
+  var bar;
+  return function (obj) {
+    for (bar in obj) {
+      if (obj.hasOwnProperty(bar)) {
+        return false;
+      }
+    }
+    return true;
+  };
+});

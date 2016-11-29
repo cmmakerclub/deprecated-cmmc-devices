@@ -90,68 +90,80 @@ var getObjectSize = function (object) {
       }
     });
 
-    var addListener = function () {
-      console.log("add listener");
-      var onMsg = function (topic, payload) {
-        console.log("on msg");
-        var topics = topic.split("/");
-        var max_depth = topics.length - 1;
-        var incomming_topic = topics[max_depth];
-        var lwt_values, device_status, device_id;
-
-        // protocol: /prefix/device_uid/lwt
-        // protocol: /prefix/device_uid/status
-        if (incomming_topic === "status") {
-          if (isValidJson(payload)) {
-            var _payload = JSON.parse(payload);
-            var _device_id_value = (_payload.info && _payload.info.device_id);
-            _private.devices[_device_id_value] = _payload;
-            delete _private.devices.undefined;
-            var devices_length = getObjectSize(_private.devices);
-            _private.system = {
-              online_devices: devices_length,
-              offline_devices: getObjectSize(_private.LWT),
-              all_devices: devices_length + getObjectSize(_private.LWT)
-            };
-
-            $scope.$apply();
-          }
-          else {
-            $log.error("INVALID JSON => ", payload);
-          }
-        }
-        else if (incomming_topic == "lwt") {
-          /*
-           * DEAD|DEVICE_ID|started_will_millis
-           * ONLINE|DEVICE_ID|started_will_millis
-           */
-          lwt_values = payload.split("|");
-          device_id = lwt_values[1];
-          device_status = lwt_values[0];
-
-          _private.LWT[device_id] = device_status;
-
-          if (_private.devices[device_id]) {
-            _private.devices[device_id].online = device_status;
-            $scope.$apply();
-            console.log("in if");
-          }
-          else {
-            console.log("147 in else");
-          }
-        }
-        else {
-          // TODO: Unhandled topic
-        }
-      };
-
-      try {
-        myMqtt.on("message", onMsg);
-      }
-      catch (ex) {
-        console.log(ex);
-      }
-    };
+    // var addListener = function () {
+    //   console.log("add listener");
+    //   var onMsg = function (topic, payload) {
+    //     console.log("on msg");
+    //     var topics = topic.split("/");
+    //     var max_depth = topics.length - 1;
+    //     var incoming_topic = topics[max_depth];
+    //     var lwt_values, is_device_online, device_id;
+    //
+    //     // protocol: /prefix/device_uid/lwt
+    //     // protocol: /prefix/device_uid/status
+    //     if (incoming_topic === "status") {
+    //       if (isValidJson(payload)) {
+    //         var _payload = JSON.parse(payload);
+    //         var _device_id_value = (_payload.info && _payload.info.device_id);
+    //         console.log("108", _device_id_value);
+    //         _private.devices[_device_id_value] = _payload;
+    //         delete _private.devices.undefined;
+    //         var devices_length = getObjectSize(_private.devices);
+    //         _private.system = {
+    //           online_devices: devices_length,
+    //           offline_devices: getObjectSize(_private.LWT),
+    //           all_devices: devices_length + getObjectSize(_private.LWT)
+    //         };
+    //
+    //         $scope.$apply();
+    //       }
+    //       else {
+    //         $log.error("INVALID JSON => ", payload);
+    //       }
+    //     }
+    //     else if (incoming_topic == "lwt") {
+    //       /*
+    //        * DEAD|DEVICE_ID|started_will_millis
+    //        * ONLINE|DEVICE_ID|started_will_millis
+    //        */
+    //       lwt_values = payload.split("|");
+    //       device_id = lwt_values[1];
+    //       is_device_online = lwt_values[0];
+    //
+    //       _private.LWT[device_id] = is_device_online;
+    //
+    //       // ONLINE FROM LWT
+    //       console.log("device_id", device_id);
+    //       console.log("devices:", _private.devices);
+    //       var _device = _private.devices[device_id];
+    //       console.log("_DEVICE", _device);
+    //       if (_device) {
+    //         _device.online = is_device_online;
+    //         if (is_device_online) {
+    //           _device.status = "ONLINE";
+    //         }
+    //         else {
+    //           _device.status = "DEAD";
+    //         }
+    //         console.log()
+    //         $scope.$apply();
+    //       }
+    //       else {
+    //         console.log("147 in else");
+    //       }
+    //     }
+    //     else {
+    //       // TODO: Unhandled topic
+    //     }
+    //   };
+    //
+    //   try {
+    //     myMqtt.on("message", onMsg);
+    //   }
+    //   catch (ex) {
+    //     console.log(ex);
+    //   }
+    // };
 
     // isFirstLogin
     $scope.showDetail = function (targetEvent, deviceUUIDuuid) {
@@ -235,16 +247,20 @@ var getObjectSize = function (object) {
       })
       .then(function () {
         console.log("SUB SUBCRIBE.....");
-        addListener();
-        return myMqtt.subscribe("/CMMC/#");
+        myMqtt.subscribe("/CMMC/+/status");
+        return myMqtt.subscribe("/CMMC/+/lwt");
       })
       .then(function (mqttClient) {
-        console.log("MQTT READY");
+        myMqtt.on("message", function (topic, payloadString, payload) {
+          console.log("ON MESSAGE", arguments);
+        });
+        return mqttClient;
+      })
+      .then(function (mqttClient) {
         $scope.status = "READY";
         $scope._client = mqttClient;
       }).catch(function (error) {
         $scope.failed = true;
-        $log.error("CONNECT FAILED: ", error);
         $scope.status = error.errorMessage;
       });
     };
