@@ -1,3 +1,29 @@
+function isValidJson (str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+var buildToggler = function buildToggler (navID, $mdSidenav, $mdUtil, $log) {
+  var callback = function () {
+    $mdSidenav(navID)
+    .toggle()
+    .then(function () {
+      $log.debug("toggle " + navID + " is done");
+    });
+  };
+
+  // return debounce function
+  return $mdUtil.debounce(callback, 200);
+};
+
+var getObjectSize = function (object) {
+  return Object.keys(object) || 0;
+};
+
 (function () {
   'use strict';
   angular
@@ -9,32 +35,10 @@
   .controller('MainController', MainController);
 
   var default_config = {
-    host: 'mqtt.cmmc.io',
+    host: 'mqtt.espert.io',
     port: 8000,
     prefix: '/CMMC',
     clientId: "CMMC-" + (Math.random() * 100)
-  };
-
-  function isValidJson (str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  var buildToggler = function buildToggler (navID, $mdSidenav, $mdUtil, $log) {
-    var callback = function () {
-      $mdSidenav(navID)
-      .toggle()
-      .then(function () {
-        $log.debug("toggle " + navID + " is done");
-      });
-    };
-
-    // return debounce function
-    return $mdUtil.debounce(callback, 200);
   };
 
   /** @ngInject */
@@ -46,28 +50,13 @@
 
     angular.extend($scope, {
       data: {
-        cb_auth: true,
-        cb_clientId: true,
-        ssl: true
+        cb_auth: false,
+        cb_clientId: false,
+        ssl: false
       }
     });
 
-    angular.extend($scope, {
-      data: {
-        cb_auth: true,
-        cb_clientId: true,
-        ssl: true
-      }
-    });
-
-    // addListener();
-    $scope.storage = $localStorage.$default({
-      config: {
-        host: '',
-        port: 8100,
-        clientId: "CMMC-" + (Math.random() * 100)
-      }
-    });
+    $scope.storage = $localStorage.$default(default_config);
 
     console.log($scope.storage);
 
@@ -101,9 +90,10 @@
       }
     });
 
-console.log($scope.storage);
     var addListener = function () {
+      console.log("add listener");
       var onMsg = function (topic, payload) {
+        console.log("on msg");
         var topics = topic.split("/");
         var max_depth = topics.length - 1;
         var incomming_topic = topics[max_depth];
@@ -116,13 +106,12 @@ console.log($scope.storage);
             var _payload = JSON.parse(payload);
             var _device_id_value = (_payload.info && _payload.info.device_id);
             _private.devices[_device_id_value] = _payload;
-
             delete _private.devices.undefined;
-
+            var devices_length = getObjectSize(_private.devices);
             _private.system = {
-              online_devices: Object.keys(_private.devices).length,
-              offline_devices: Object.keys(_private.LWT).length,
-              all_devices: (Object.keys(_private.LWT).length || 0) + Object.keys(_private.devices).length,
+              online_devices: devices_length,
+              offline_devices: getObjectSize(_private.LWT),
+              all_devices: devices_length + getObjectSize(_private.LWT)
             };
 
             $scope.$apply();
@@ -142,8 +131,6 @@ console.log($scope.storage);
 
           _private.LWT[device_id] = device_status;
 
-          // $log.debug("lwt = ", lwt_values);
-
           if (_private.devices[device_id]) {
             _private.devices[device_id].online = device_status;
             $scope.$apply();
@@ -152,10 +139,6 @@ console.log($scope.storage);
           else {
             console.log("147 in else");
           }
-
-          // console.log(incomming_topic);
-          // console.log(">", lwt_values, ">", device_status);
-          // console.log(_private.devices);
         }
         else {
           // TODO: Unhandled topic
@@ -170,6 +153,7 @@ console.log($scope.storage);
       }
     };
 
+    // isFirstLogin
     $scope.showDetail = function (targetEvent, deviceUUIDuuid) {
       $mdDialog.show({
         controller: DialogController,
@@ -190,16 +174,18 @@ console.log($scope.storage);
     };
 
     var isFirstLogin = function () {
+      // return false;
       var is_firstLogin = ($scope.config.host == null || $scope.config.host == "");
       return is_firstLogin;
     };
 
     $scope.showFirstPopup = function (ev) {
-      console.log('showFirstPopUp');
       if (!isFirstLogin()) {
+        console.log("[SKIP] showFirstPopUp");
         return;
       }
-      console.log('[] showFirstPopUp');
+
+      console.log('showFirstPopUp');
 
       $mdDialog.show({
         controller: FirstPopupDialogController,
@@ -228,49 +214,34 @@ console.log($scope.storage);
       console.log($localStorage);
       $localStorage.$reset();
       window.location.reload();
-    }
+    };
 
     $scope.allDevices = function () {
       return _private.devices;
     };
 
-    $scope.operations = {
-      "subscribe": function () {
-        return myMqtt.subscribe("/CMMC/#")
-      },
-      "connect": function () {
-        return myMqtt.connect()
-      },
-      "config": $scope.config,
-      "disconnect": angular.noop
-    };
-
     //asynchronously
     $scope.connect = function () {
+      console.log("[0] CONNECT ... ");
       $scope.status = "CONNECTING...";
-
-      addListener();
 
       angular.extend(_private, {
         devices: {}
       });
 
-      angular.forEach($scope.config, function (value, key) {
-        if ($scope.config[key] == "") {
-          delete $scope.config[key];
-        }
-      });
-      $scope.operations.config = $scope.config;
-
-      myMqtt.create($scope.operations.config)
-      .then($scope.operations.connect)
-      .then($scope.operations.subscribe)
+      myMqtt.create($scope.config)
+      .then(function () {
+        return myMqtt.connect();
+      })
+      .then(function () {
+        console.log("SUB SUBCRIBE.....");
+        addListener();
+        return myMqtt.subscribe("/CMMC/#");
+      })
       .then(function (mqttClient) {
+        console.log("MQTT READY");
         $scope.status = "READY";
-        $scope.operations.disconnect = function () {
-          $log.info("disconnection called");
-          mqttClient.disconnect();
-        };
+        $scope._client = mqttClient;
       }).catch(function (error) {
         $scope.failed = true;
         $log.error("CONNECT FAILED: ", error);
@@ -280,7 +251,9 @@ console.log($scope.storage);
 
     $scope.disconnect = function () {
       $log.debug("CALLING DISCONNECT...");
-      $scope.operations.disconnect();
+      if ($scope._client) {
+        $scope._client.disconnect();
+      }
     };
 
     function DialogController ($scope, $mdDialog, deviceUUID, devices) {
@@ -293,12 +266,10 @@ console.log($scope.storage);
       $scope.cancel = function () {
         $mdDialog.cancel();
       };
-
     }
 
     function FirstPopupDialogController ($scope, $mdDialog) {
       $scope.config = default_config;
-
       $scope.closeAndSaveNewConfig = function (newConfig) {
         console.log("FirstPopUpDialog:: closNav");
         console.log("save fn", newConfig);

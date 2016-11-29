@@ -18,6 +18,10 @@ html {
   flex-direction: row;
 }
 
+.item_placeholder {
+  justify-content: flex-start;
+}
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -117,6 +121,30 @@ md-virtual-repeat-container {
 
 .main-content {
 }
+
+md-grid-list {
+  margin: 8px; }
+
+.gray {
+  background: #f5f5f5; }
+
+.green {
+  background: #b9f6ca; }
+
+.yellow {
+  background: #ffff8d; }
+
+.blue {
+  background: #84ffff; }
+
+.purple {
+  background: #b388ff; }
+
+.red {
+  background: #ff8a80; }
+
+md-grid-tile {
+  transition: all 400ms ease-out 50ms; }
 
 /*.dialog-content {
   min-height: 30%;

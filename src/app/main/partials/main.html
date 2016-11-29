@@ -33,38 +33,80 @@
     <!--<md-content  flex layout-padding layout-align="center">-->
     <!--{{ status }}-->
     <!--</md-content>-->
+    <div>
+      <md-grid-list
+        md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6"
+        md-row-height-gt-md="1:1" md-row-height="2:2"
+        md-gutter="12px" md-gutter-gt-sm="8px">
 
-    <div class="devices" layout-align="center">
-      <!--<div>{{ main.devices }}</div>-->
-      <!--<div>{{ main.LWT }}</div>-->
-      <div ng-hide="main.system">Connecting...</div>
-      <!--<div>{{ config.host }}:{{config.port}}</div>-->
-      <!--<div class="item-container" flex-auto ng-show="main.system">-->
-      <!--SYSTEM = {{ main.system }}-->
-      <!--</div>-->
-      <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status"
-               ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
+        <md-grid-tile
+          md-rowspan="2" md-colspan="2"
+          class="green"
+          ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
+          <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status">
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline">{{ device.d.myName }}</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-content>
+              <div layout="row">
+                <div flex="10"></div>
+                <div flex="20">
+                  micros()
+                </div>
+                <div flex="70">
+                  {{ device.d.millis }}
+                </div>
+              </div>
+              <div layout="row">
+                <div flex="10"></div>
+                <div flex="20">
+                  IP
+                </div>
+                <div flex="70">
+                  {{ device.info.ip }}
+                </div>
+              </div>
+              <div layout="row">
+                <div flex="10"></div>
+                <div flex="20">
+                  HEAP
+                </div>
+                <div flex="70">
+                  {{device.d.heap}}kB
+                </div>
+              </div>
+              <div layout="row">
+                <div flex="10"></div>
+                <div flex="20">
+                  Prefix
+                </div>
+                <div flex="70">
+                  {{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status
+                </div>
+              </div>
 
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">{{ device.d.myName }}</span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-content layout-padding>
-          <div class="thumbnail" flex="100" layout="column" layout-align="center center">
-            <!--<div>[client Id => {{device.info.client_id}}]</div>-->
-            <!--<div>[ONLINE? => {{ main.LWT[device.info.client_id] }}]</div>-->
-            <!--<div ng-show="{{ device.info.id !='' || device.d.id != ''}}">{{ device.info.id || device.d.id }}</div>-->
-            <div>{{ device.d.counter }} ({{ device.d.millis/1000}} ms)</div>
-            <div>{{ device.d.ip || device.info.ip }}</div>
-            <div>{{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status</div>
-          </div>
-          <div class="md-actions" layout="row" layout-align="end center">
-            <md-button ng-click="showDetail($event, key)">Detail</md-button>
-          </div>
-        </md-content>
-      </md-card>
+              <div class="md-actions" layout="row" layout-align="end center">
+                <md-button ng-click="showDetail($event, key)">Detail</md-button>
+              </div>
+            </md-content>
+          </md-card>
+          <md-grid-tile-footer>
+            <h3>#{{key}}: (1r x 1c)</h3>
+          </md-grid-tile-footer>
+        </md-grid-tile>
+      </md-grid-list>
     </div>
+    <!--<div class="devices" layout-align="center">-->
+    <!--&lt;!&ndash;<div>{{ main.devices }}</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<div>{{ main.LWT }}</div>&ndash;&gt;-->
+    <!--<div ng-hide="main.system">Connecting...</div>-->
+    <!--&lt;!&ndash;<div>{{ config.host }}:{{config.port}}</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="item-container" flex-auto ng-show="main.system">&ndash;&gt;-->
+    <!--&lt;!&ndash;SYSTEM = {{ main.system }}&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--</div>-->
   </section>
 
   <div ng-init="showFirstPopup($event)"></div>
