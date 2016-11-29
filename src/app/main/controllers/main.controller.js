@@ -24,12 +24,12 @@ var getObjectSize = function (object) {
   return Object.keys(object).length || 0;
 };
 
+
 (function () {
   'use strict';
   angular
   .module('cmmcDevices')
   .factory("myMqtt", function (mqttwsProvider) {
-    // return mqtt connector
     return mqttwsProvider({});
   })
   .controller('MainController', MainController);
@@ -37,17 +37,35 @@ var getObjectSize = function (object) {
   var default_config = {
     host: 'mqtt.espert.io',
     port: 8000,
-    prefix: '/CMMC',
+    prefix: 'CMMC',
     clientId: "CMMC-" + (Math.random() * 100)
   };
 
+  var parseMessage = function ($q, topic, text) {
+    var deferred = $q.defer();
+    deferred.resolve(topic.split("/"));
+    return deferred.promise;
+  }
+
+  var jsonParsePromise = function ($q, payloadString) {
+    var deferred = $q.defer();
+    var object;
+    try {
+      object = JSON.parse(payloadString);
+      deferred.resolve(object);
+    }
+    catch (ex) {
+      deferred.reject(ex);
+    }
+    return deferred.promise;
+  }
+
   /** @ngInject */
-  function MainController ($scope, $timeout, myMqtt, $localStorage,
+  function MainController ($q, $scope, $timeout, myMqtt, $localStorage,
                            $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
-    var _private = angular.extend(this, {devices: {}, LWT: {}});
+    var _controller = angular.extend(this, {devices: {}, LWT: {}});
 
     $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil, $log);
-
     angular.extend($scope, {
       data: {
         cb_auth: false,
@@ -73,6 +91,7 @@ var getObjectSize = function (object) {
       $mdSidenav('right').close()
       .then(function () {
         $scope.storage.config = newConfig;
+        $scope.removeDevice
         $scope.disconnect();
         $scope.connect();
       });
@@ -186,7 +205,6 @@ var getObjectSize = function (object) {
     };
 
     var isFirstLogin = function () {
-      // return false;
       var is_firstLogin = ($scope.config.host == null || $scope.config.host == "");
       return is_firstLogin;
     };
@@ -218,18 +236,13 @@ var getObjectSize = function (object) {
 
     };
 
-    var remmoveDevices = function () {
-      angular.extend(_private, {devices: {}});
-    };
-
     $scope.reset = function () {
-      console.log($localStorage);
       $localStorage.$reset();
       window.location.reload();
     };
 
     $scope.allDevices = function () {
-      return _private.devices;
+      return _controller.devices;
     };
 
     //asynchronously
@@ -237,7 +250,7 @@ var getObjectSize = function (object) {
       console.log("[0] CONNECT ... ");
       $scope.status = "CONNECTING...";
 
-      angular.extend(_private, {
+      angular.extend(_controller, {
         devices: {}
       });
 
@@ -246,13 +259,41 @@ var getObjectSize = function (object) {
         return myMqtt.connect();
       })
       .then(function () {
-        console.log("SUB SUBCRIBE.....");
         myMqtt.subscribe("/CMMC/+/status");
+        // myMqtt.subscribe("/CMMC/+/$/#");
         return myMqtt.subscribe("/CMMC/+/lwt");
       })
       .then(function (mqttClient) {
         myMqtt.on("message", function (topic, payloadString, payload) {
-          console.log("ON MESSAGE", arguments);
+          var _topics;
+          parseMessage($q, topic, payloadString)
+          .then(function (topics) {
+            if (topics[0] === "") {
+              topics.shift();
+            }
+            return topics;
+          })
+          .then(function (topics) {
+            _topics = topics;
+            /*   [ 0: prefix ], [ 1: id ], [ 2: status/lwt ] */
+            if (topics[2] == "status") {
+              return jsonParsePromise($q, payloadString);
+            }
+            else if (topics[2] == "lwt") {
+              return "lwt";
+            }
+            else {
+              return undefined;
+            }
+          })
+          .then(function (device) {
+            if (device && device.d) {
+              console.log(topic, device);
+              _controller.devices[_topics[1]] = device;
+            }
+          }).catch(function (ex) {
+            console.log("ERROR: ", ex);
+          });
         });
         return mqttClient;
       })
@@ -291,7 +332,6 @@ var getObjectSize = function (object) {
         console.log("save fn", newConfig);
         $mdDialog.hide(newConfig);
       }
-
     }
 
     if (!isFirstLogin()) {
