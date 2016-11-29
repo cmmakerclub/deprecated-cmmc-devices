@@ -89,7 +89,7 @@ var getObjectSize = function (object) {
 
 
     $scope.closeNav = function () {
-      console.log("close nave");
+      $log.debug("close nave");
       $mdSidenav('right').close()
       .then(function () {
         $scope.config = angular.extend({}, $scope.storage.config);
@@ -97,7 +97,7 @@ var getObjectSize = function (object) {
     };
 
     $scope.closeAndSaveNewConfig = function (newConfig) {
-      console.log("close & save");
+      $log.debug("close & save");
       $mdSidenav('right').close()
       .then(function () {
         $scope.storage.config = newConfig;
@@ -214,7 +214,7 @@ var getObjectSize = function (object) {
               _controller.devices[_uuid_topic] = device;
             }
           }).catch(function (ex) {
-            console.log("ERROR: ", ex);
+            $log.debug("ERROR: ", ex);
           });
         });
         return mqttClient;
@@ -250,8 +250,8 @@ var getObjectSize = function (object) {
     function FirstPopupDialogController ($scope, $mdDialog) {
       $scope.config = default_config;
       $scope.closeAndSaveNewConfig = function (newConfig) {
-        console.log("FirstPopUpDialog:: closNav");
-        console.log("save fn", newConfig);
+        $log.debug("FirstPopUpDialog:: closNav");
+        $log.debug("save fn", newConfig);
         $mdDialog.hide(newConfig);
       }
     }
