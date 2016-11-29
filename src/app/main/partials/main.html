@@ -33,67 +33,76 @@
     <!--<md-content  flex layout-padding layout-align="center">-->
     <!--{{ status }}-->
     <!--</md-content>-->
-    <div>
-      <md-grid-list
-        md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6"
-        md-row-height-gt-md="1:1" md-row-height="2:2"
-        md-gutter="12px" md-gutter-gt-sm="8px">
+    <md-grid-list
+      md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="4"
+      md-row-height-gt-md="1:1" md-row-height="2:2"
+      md-gutter="12px" md-gutter-gt-sm="8px">
 
-        <md-grid-tile
-          md-rowspan="1" md-colspan="1"
-          ng-class="device.status"
-          ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
-          <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status">
-            <md-card-title>
-              <md-card-title-text>
-                <span class="md-headline">{{ device.d.myName }}</span>
-              </md-card-title-text>
-            </md-card-title>
-            <md-content layout-padding>
-              <div layout="row">
-                <div flex="30">
-                  micros
-                </div>
-                <div flex="70">
-                  {{ device.d.millis }}
-                </div>
+      <md-grid-tile
+        md-rowspan="1" md-colspan="1"
+        ng-class="device.status"
+        ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
+        <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status">
+          <!--<md-card-title>-->
+          <!--<md-card-title-text>-->
+          <!--<span class="md-headline">{{ device.d.myName }}</span>-->
+          <!--</md-card-title-text>-->
+          <!--</md-card-title>-->
+          <md-content layout-padding>
+            <div layout="row">
+              <div flex="40">
+                days
               </div>
-              <div layout="row">
-                <div flex="30">
-                  IP
-                </div>
-                <div flex="70">
-                  {{ device.info.ip }}
-                </div>
+              <div flex="60">
+                {{ ((device.d.millis/1000)/(86400)).toFixed(5) }}
               </div>
-              <div layout="row">
-                <div flex="30">
-                  HEAP
-                </div>
-                <div flex="70">
-                  {{device.d.heap/1000}}kB
-                </div>
+            </div>
+            <div layout="row">
+              <div flex="40">
+                IP
               </div>
-              <div layout="row">
-                <div flex="30">
-                  Prefix
-                </div>
-                <div flex="70">
-                  {{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status
-                </div>
+              <div flex="60">
+                {{ device.info.ip }}
               </div>
+            </div>
+            <div layout="row">
+              <div flex="40">
+                HEAP
+              </div>
+              <div flex="60">
+                {{device.d.heap/1000}}kB
+              </div>
+            </div>
+            <div layout="row">
+              <div flex="40">
+                prefix
+              </div>
+              <div flex="60">
+                {{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status
+              </div>
+            </div>
 
-              <div class="md-actions" layout="row" layout-align="end center">
-                <md-button ng-click="showDetail($event, key)">Detail</md-button>
-              </div>
-            </md-content>
-          </md-card>
-          <md-grid-tile-footer>
-            <!--<h3>#{{key}}: {{ device.d.myName }}</h3>-->
-          </md-grid-tile-footer>
-        </md-grid-tile>
-      </md-grid-list>
-    </div>
+            <!--<div layout="row">-->
+            <!--<div flex="40">-->
+            <!--myName-->
+            <!--</div>-->
+            <!--<div flex="60">-->
+            <!--<span>-->
+            <!--{{ device.d.myName }}-->
+            <!--</span>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <div class="md-actions" layout="row" layout-align="end center">
+              <md-button ng-click="showDetail($event, key)">Detail</md-button>
+            </div>
+          </md-content>
+        </md-card>
+        <md-grid-tile-footer>
+          <h3>#{{key}}: {{ device.d.myName }}</h3>
+        </md-grid-tile-footer>
+      </md-grid-tile>
+    </md-grid-list>
     <!--<div class="devices" layout-align="center">-->
     <!--&lt;!&ndash;<div>{{ main.devices }}</div>&ndash;&gt;-->
     <!--&lt;!&ndash;<div>{{ main.LWT }}</div>&ndash;&gt;-->

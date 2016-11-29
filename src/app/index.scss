@@ -94,6 +94,10 @@ section.main-section{
   background: lighten($color: lightgreen, $amount: 16);
 }
 
+.DEAD {
+  background: lighten($color: lightsalmon, $amount: 20);
+}
+
 #vertical-container {
   height: 292px;
   width: 400px;
