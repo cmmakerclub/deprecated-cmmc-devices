@@ -268,7 +268,7 @@ var getObjectSize = function (object) {
         $mdSidenav('right').open();
         $scope.storage.isFirstTime = false;
         $localStorage.$apply();
-      }, 1000)
+      }, 2000)
       $scope.connect();
     }
     else {
