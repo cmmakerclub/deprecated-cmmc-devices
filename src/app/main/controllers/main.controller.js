@@ -78,6 +78,7 @@ var getObjectSize = function (object) {
     });
 
     $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil, $log);
+
     angular.extend($scope, {
       data: {
         cb_auth: false,
@@ -86,9 +87,6 @@ var getObjectSize = function (object) {
       }
     });
 
-    $scope.storage = $localStorage.$default(default_config);
-
-    console.log($scope.storage);
 
     $scope.closeNav = function () {
       console.log("close nave");
@@ -109,7 +107,6 @@ var getObjectSize = function (object) {
       });
     };
 
-    $scope.config = angular.extend({}, $scope.storage.config);
 
     angular.extend($scope, {
       onlineStatus: "ALL",
@@ -139,38 +136,6 @@ var getObjectSize = function (object) {
         $log.info('You cancelled the dialog.');
         // $scope.message = 'You cancelled the dialog.';
       });
-    };
-
-    var isFirstLogin = function () {
-      var is_firstLogin = ($scope.config.host == null || $scope.config.host == "");
-      return is_firstLogin;
-    };
-
-    $scope.showFirstPopup = function (ev) {
-      if (!isFirstLogin()) {
-        console.log("[SKIP] showFirstPopUp");
-        return;
-      }
-
-      console.log('showFirstPopUp');
-
-      $mdDialog.show({
-        controller: FirstPopupDialogController,
-        templateUrl: 'app/main/partials/firstPopup.html',
-        parent: angular.element(document.body),
-        targetEvent: ev,
-        clickOutsideToClose: false
-      })
-      .then(function (newConfig) {
-        $scope.config = newConfig;
-        $scope.storage.config = newConfig;
-        $scope.disconnect();
-        $scope.connect();
-      }, function () {
-        $log.debug("CALLING CONNECT..");
-        $scope.connect();
-      });
-
     };
 
     $scope.reset = function () {
@@ -291,7 +256,22 @@ var getObjectSize = function (object) {
       }
     }
 
-    if (!isFirstLogin()) {
+
+    var isFirstLogin = function (config) {
+      return $scope.storage.isFirstTime;
+    };
+
+    $scope.storage = $localStorage.$default({isFirstTime: true});
+    $scope.config = angular.extend({}, default_config);
+    if (isFirstLogin($scope.config)) {
+      $timeout(function () {
+        $mdSidenav('right').open();
+        $scope.storage.isFirstTime = false;
+        $localStorage.$apply();
+      }, 1000)
+      $scope.connect();
+    }
+    else {
       $scope.connect();
     }
 

@@ -18,7 +18,7 @@
 
 
     $mdThemingProvider.theme('default')
-        .primaryPalette('cyan')
+        .primaryPalette('indigo')
         .accentPalette('orange');
   }
 
