@@ -15,10 +15,8 @@ angular.module('cmmcDevices')
       return input;
     }
 
-    console.log("status...");
     var result = {};
     angular.forEach(input, function (value, key) {
-      console.log("filter: value.status", value.status);
       if (value.status == status) {
         result[key] = value;
       }

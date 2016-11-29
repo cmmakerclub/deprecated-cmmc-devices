@@ -9,15 +9,12 @@
         <md-input-container class="md-block" flex-gt-sm>
           <label>Filter device</label>
           <input ng-model="filterDevice.name">
-          {{ filterDevice }}
-          {{ onlineStatus }}
         </md-input-container>
-
         <md-input-container>
           <md-select aria-label="online status" name="onlineStatus" ng-model="onlineStatus" required>
-            <md-option value="ALL">All devices ({{ main.system.all_devices || 0 }})</md-option>
-            <md-option value="ONLINE">Online ({{ main.system.online_devices}})</md-option>
-            <md-option value="DEAD">Offline ({{ main.system.offline_devices}})</md-option>
+            <md-option value="ALL">ALL DEVICES ({{ main.LWT_COUNT.ALL }})</md-option>
+            <md-option value="ONLINE">ONLINE ({{ main.LWT_COUNT.ONLINE }})</md-option>
+            <md-option value="DEAD">DEAD ({{ main.LWT_COUNT.DEAD }})</md-option>
           </md-select>
         </md-input-container>
 
@@ -93,7 +90,7 @@
           </md-content>
         </md-card>
         <!--<md-grid-tile-footer>-->
-          <!--&lt;!&ndash;<h3>#{{key}}: {{ device.d.myName }}</h3>&ndash;&gt;-->
+        <!--&lt;!&ndash;<h3>#{{key}}: {{ device.d.myName }}</h3>&ndash;&gt;-->
         <!--</md-grid-tile-footer>-->
       </md-grid-tile>
     </md-grid-list>
