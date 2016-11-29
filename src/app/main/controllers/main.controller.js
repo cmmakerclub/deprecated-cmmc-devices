@@ -63,7 +63,14 @@ var getObjectSize = function (object) {
   /** @ngInject */
   function MainController ($q, $scope, $timeout, myMqtt, $localStorage,
                            $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
-    var _controller = angular.extend(this, {devices: {}, LWT: {}});
+    var _controller = angular.extend(this, {
+      devices: {},
+      LWT: {
+        ALL: {},
+        DEAD: {},
+        ONLINE: {}
+      }
+    });
 
     $scope.toggleRight = buildToggler('right', $mdSidenav, $mdUtil, $log);
     angular.extend($scope, {
@@ -250,22 +257,20 @@ var getObjectSize = function (object) {
       console.log("[0] CONNECT ... ");
       $scope.status = "CONNECTING...";
 
-      angular.extend(_controller, {
-        devices: {}
-      });
-
       myMqtt.create($scope.config)
       .then(function () {
         return myMqtt.connect();
       })
       .then(function () {
-        myMqtt.subscribe("/CMMC/+/status");
         // myMqtt.subscribe("/CMMC/+/$/#");
+        myMqtt.subscribe("/CMMC/+/status");
         return myMqtt.subscribe("/CMMC/+/lwt");
       })
       .then(function (mqttClient) {
         myMqtt.on("message", function (topic, payloadString, payload) {
           var _topics;
+          var _uuid_topic;
+          var _action_topic;
           parseMessage($q, topic, payloadString)
           .then(function (topics) {
             if (topics[0] === "") {
@@ -275,12 +280,19 @@ var getObjectSize = function (object) {
           })
           .then(function (topics) {
             _topics = topics;
+            _uuid_topic = _topics[1];
+            _action_topic = _topics[2];
             /*   [ 0: prefix ], [ 1: id ], [ 2: status/lwt ] */
-            if (topics[2] == "status") {
-              return jsonParsePromise($q, payloadString);
-            }
-            else if (topics[2] == "lwt") {
+            if (_action_topic == "lwt") {
+              console.log(_uuid_topic, payloadString);
+              var lwts = payloadString.split("|");
+              var lwt_status = lwts[0]
+              _controller.LWT.ALL[_uuid_topic] = payloadString;
+              _controller.LWT[lwt_status][_uuid_topic] = payloadString;
               return "lwt";
+            }
+            else if (_action_topic == "status") {
+              return jsonParsePromise($q, payloadString);
             }
             else {
               return undefined;
@@ -288,8 +300,8 @@ var getObjectSize = function (object) {
           })
           .then(function (device) {
             if (device && device.d) {
-              console.log(topic, device);
-              _controller.devices[_topics[1]] = device;
+              _controller.devices[_uuid_topic] = device;
+              console.log(_controller);
             }
           }).catch(function (ex) {
             console.log("ERROR: ", ex);
