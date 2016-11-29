@@ -90,6 +90,10 @@ section.main-section{
   }
 }
 
+.ONLINE, .online {
+  background: lighten($color: lightgreen, $amount: 16);
+}
+
 #vertical-container {
   height: 292px;
   width: 400px;

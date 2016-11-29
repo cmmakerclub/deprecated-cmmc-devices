@@ -41,6 +41,7 @@
 
         <md-grid-tile
           md-rowspan="1" md-colspan="1"
+          ng-class="device.status"
           ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
           <md-card ng-class="main.LWT[device.info.client_id]" class="item" ng-class="device.status">
             <md-card-title>
@@ -48,19 +49,17 @@
                 <span class="md-headline">{{ device.d.myName }}</span>
               </md-card-title-text>
             </md-card-title>
-            <md-content>
+            <md-content layout-padding>
               <div layout="row">
-                <div flex="10"></div>
-                <div flex="20">
-                  micros()
+                <div flex="30">
+                  micros
                 </div>
                 <div flex="70">
                   {{ device.d.millis }}
                 </div>
               </div>
               <div layout="row">
-                <div flex="10"></div>
-                <div flex="20">
+                <div flex="30">
                   IP
                 </div>
                 <div flex="70">
@@ -68,17 +67,15 @@
                 </div>
               </div>
               <div layout="row">
-                <div flex="10"></div>
-                <div flex="20">
+                <div flex="30">
                   HEAP
                 </div>
                 <div flex="70">
-                  {{device.d.heap}}kB
+                  {{device.d.heap/1000}}kB
                 </div>
               </div>
               <div layout="row">
-                <div flex="10"></div>
-                <div flex="20">
+                <div flex="30">
                   Prefix
                 </div>
                 <div flex="70">
@@ -92,7 +89,7 @@
             </md-content>
           </md-card>
           <md-grid-tile-footer>
-            <h3>#{{key}}: {{ device.d.myName }}</h3>
+            <!--<h3>#{{key}}: {{ device.d.myName }}</h3>-->
           </md-grid-tile-footer>
         </md-grid-tile>
       </md-grid-list>
