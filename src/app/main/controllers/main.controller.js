@@ -96,6 +96,12 @@ var getObjectSize = function (object) {
       });
     };
 
+    // $scope.removeDevices = function () {
+    //   // _controller.devices = {};
+    //   // angular.extend(_controller, {devices: {}});
+    // };
+
+
     $scope.closeAndSaveNewConfig = function (newConfig) {
       $log.debug("close & save");
       $mdSidenav('right').close()
