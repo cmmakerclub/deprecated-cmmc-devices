@@ -28,10 +28,12 @@ angular.module('cmmcDevices')
   return function (input, name) {
     var result = {};
     angular.forEach(input, function (value, key) {
-      if (value.d && value.d.myName !== undefined) {
+      if (value.d && value.d.myName) {
         if (value.d.myName.toLowerCase().indexOf(name.toLowerCase()) > -1) {
           result[key] = value;
         }
+      }
+      else {
       }
     });
     return result;

@@ -101,7 +101,7 @@ var getObjectSize = function (object) {
       $mdSidenav('right').close()
       .then(function () {
         $scope.storage.config = newConfig;
-        $scope.removeDevice
+        // $scope.removeDevice();
         $scope.disconnect();
         $scope.connect();
       });
@@ -147,6 +147,25 @@ var getObjectSize = function (object) {
       return _controller.devices;
     };
 
+    var updateDeviceStatus = function () {
+      _controller.LWT_COUNT.ALL = getObjectSize(_controller.LWT.ALL);
+      _controller.LWT_COUNT.ONLINE = getObjectSize(_controller.LWT.ONLINE);
+      _controller.LWT_COUNT.DEAD = getObjectSize(_controller.LWT.DEAD);
+
+      angular.forEach(_controller.LWT.DEAD, function (v, uuid) {
+        if (_controller.devices[uuid]) {
+          _controller.devices[uuid].status = "DEAD";
+        }
+      });
+
+      angular.forEach(_controller.LWT.ONLINE, function (v, uuid) {
+        if (_controller.devices[uuid]) {
+          _controller.devices[uuid].status = "ONLINE";
+        }
+      });
+
+    }
+
     //asynchronously
     $scope.connect = function () {
       $log.debug("[0] CONNECT ... ");
@@ -168,6 +187,8 @@ var getObjectSize = function (object) {
           var _uuid_topic;
           var _action_topic;
           var _lwt_status;
+
+          // parse the message
           parseMessage($q, topic, payloadString)
           .then(function (topics) {
             if (topics[0] === "") {
@@ -183,9 +204,9 @@ var getObjectSize = function (object) {
             /*   [ 0: prefix ], [ 1: id ], [ 2: status/lwt ] */
             $log.debug("action: ", _action_topic, _uuid_topic);
             if (_action_topic == "lwt") {
-              $log.debug(payloadString)
+              $log.debug(payloadString);
               var lwts = payloadString.split("|");
-              _lwt_status = lwts[0]
+              _lwt_status = lwts[0];
               return "lwt";
             }
             else if (_action_topic == "status") {
@@ -199,21 +220,14 @@ var getObjectSize = function (object) {
             if (device == "lwt") {
               delete _controller.LWT['DEAD'][_uuid_topic];
               delete _controller.LWT['ONLINE'][_uuid_topic];
-
               _controller.LWT.ALL[_uuid_topic] = payloadString;
               _controller.LWT[_lwt_status][_uuid_topic] = payloadString;
-
-              _controller.LWT_COUNT.ALL = getObjectSize(_controller.LWT.ALL);
-              _controller.LWT_COUNT.ONLINE = getObjectSize(_controller.LWT.ONLINE);
-              _controller.LWT_COUNT.DEAD = getObjectSize(_controller.LWT.DEAD);
-
-              if (_controller.devices[_uuid_topic]) {
-                _controller.devices[_uuid_topic].status = _lwt_status;
-              }
+              updateDeviceStatus();
             }
             else if (device && device.d) {
               device.status = "ONLINE";
               _controller.devices[_uuid_topic] = device;
+              updateDeviceStatus();
             }
           }).catch(function (ex) {
             $log.debug("ERROR: ", ex);
