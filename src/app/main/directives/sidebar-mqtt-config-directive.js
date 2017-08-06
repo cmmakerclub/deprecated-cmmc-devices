@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 /**
  * @ngdoc directive
  * @name cmmcDevices.directive:sidebarMqttConfig
@@ -13,5 +13,5 @@ angular.module('cmmcDevices')
       link: function (scope, element, attrs) {
         // element.text('this is the sidebarMqttConfig directive');
       }
-    };
-  });
+    }
+  })

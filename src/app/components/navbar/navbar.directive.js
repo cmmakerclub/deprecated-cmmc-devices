@@ -1,12 +1,12 @@
 (function () {
-  'use strict';
+  'use strict'
 
   angular
     .module('cmmcDevices')
-    .directive('myNavBar', acmeNavbar);
+    .directive('myNavBar', acmeNavbar)
 
   /** @ngInject */
-  function acmeNavbar() {
+  function acmeNavbar () {
     var directive = {
       restrict: 'E',
       templateUrl: 'app/components/navbar/navbar.html',
@@ -16,16 +16,16 @@
       controller: NavbarController,
       controllerAs: 'vm',
       bindToController: true
-    };
+    }
 
-    return directive;
+    return directive
 
     /** @ngInject */
-    function NavbarController(moment) {
-      var vm = this;
+    function NavbarController (moment) {
+      var vm = this
       // "vm.creation" is avaible by directive option "bindToController: true"
-      vm.relativeDate = moment(vm.creationDate).fromNow();
+      vm.relativeDate = moment(vm.creationDate).fromNow()
     }
   }
 
-})();
+})()

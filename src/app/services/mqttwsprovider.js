@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @ngdoc service
@@ -14,68 +14,68 @@ angular.module('cmmcDevices')
     this.$get = function ($q, $window, $log) {
       // $log.debug("$get");
       var genClientId = function (str) {
-        var time = new Date();
-        return str + '.' + time.getTime();
-      };
-      return function socketFactory(pre_options) {
-        var host;
-        var port;
-        var useTLS = false;
-        var username = null;
-        var password = null;
-        var cleansession = true;
-        var mqttClient;
-        var reconnectTimeout = 2000;
-        var events = {};
-        var _options = {};
+        var time = new Date()
+        return str + '.' + time.getTime()
+      }
+      return function socketFactory (pre_options) {
+        var host
+        var port
+        var useTLS = false
+        var username = null
+        var password = null
+        var cleansession = true
+        var mqttClient
+        var reconnectTimeout = 2000
+        var events = {}
+        var _options = {}
 
         return {
           on: function (event, func) {
-            events[event] = func;
+            events[event] = func
           },
           addListener: function (event, func) {
-            events[event] = func;
+            events[event] = func
           },
           create: function (options) {
-            var defer = $q.defer();
-            options = angular.extend(_options, options);
-            host = options.host;
-            port = parseInt(options.port, 10);
-            $log.debug("CREATE", options);
+            var defer = $q.defer()
+            options = angular.extend(_options, options)
+            host = options.host
+            port = parseInt(options.port, 10)
+            $log.debug('CREATE', options)
             if (!options.clientId) {
-              options.clientId = genClientId("RANDOM");
-              $log.debug("PROVIDER", " clientId = ", options.clientId);
+              options.clientId = genClientId('RANDOM')
+              $log.debug('PROVIDER', ' clientId = ', options.clientId)
             }
-            mqttClient = new Paho.MQTT.Client(host, port, options.clientId);
-            defer.resolve(mqttClient);
-            return defer.promise;
+            mqttClient = new Paho.MQTT.Client(host, port, options.clientId)
+            defer.resolve(mqttClient)
+            return defer.promise
           },
           subscribe: function (topic, opts) {
-            var defer = $q.defer();
-            opts = opts || {qos: 0};
+            var defer = $q.defer()
+            opts = opts || {qos: 0}
             opts.onSuccess = function () {
-              defer.resolve(mqttClient);
-            };
-            mqttClient.subscribe(topic, opts);
-            return defer.promise;
+              defer.resolve(mqttClient)
+            }
+            mqttClient.subscribe(topic, opts)
+            return defer.promise
           },
           connect: function () {
-            var defer = $q.defer();
+            var defer = $q.defer()
 
             var onSuccess = function () {
               var success_event = events.connected || function () {
-                  $log.debug("[69] DEFAULT CONNECTED..");
-                };
-              success_event.call(null, arguments);
-              $log.debug("[Provider] onSuccess", "MQTT CONNECTED..");
-              defer.resolve(arguments);
-            };
+                $log.debug('[69] DEFAULT CONNECTED..')
+              }
+              success_event.call(null, arguments)
+              $log.debug('[Provider] onSuccess', 'MQTT CONNECTED..')
+              defer.resolve(arguments)
+            }
 
             var onFailure = function (message) {
-              $log.info("[86]..FAILED....", message);
+              $log.info('[86]..FAILED....', message)
               // $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
-              defer.reject(message);
-            };
+              defer.reject(message)
+            }
 
             var options = {
               timeout: 10,
@@ -85,44 +85,42 @@ angular.module('cmmcDevices')
               cleanSession: cleansession,
               onSuccess: onSuccess,
               onFailure: onFailure
-            };
+            }
 
-            $log.debug("[101] PROVIDER", "OPTIONS", _options);
+            $log.debug('[101] PROVIDER', 'OPTIONS', _options)
 
             if (!!_options.username) {
               angular.extend(options, {
                 username: _options.username,
                 password: _options.password
-              });
+              })
             }
 
-            $log.debug("MQTT CONNECTION OPTIONS = ", options);
-
+            $log.debug('MQTT CONNECTION OPTIONS = ', options)
 
             mqttClient.onMessageArrived = function (message) {
               try {
-                var topic = message.destinationName;
-                var payload = message.payloadString;
-                var ev = events.message || angular.noop;
-                ev.apply(null, [topic, payload, message]);
+                var topic = message.destinationName
+                var payload = message.payloadString
+                var ev = events.message || angular.noop
+                ev.apply(null, [topic, payload, message])
               }
               catch (ex) {
-                $log.info("[error] skipped. still running..", ex);
+                $log.info('[error] skipped. still running..', ex)
               }
-            };
+            }
 
             mqttClient.onConnectionLost = function (responseObject) {
-              console.log("onConnection Lost ", responseObject);
-            };
+              console.log('onConnection Lost ', responseObject)
+            }
 
-            mqttClient.connect(options);
+            mqttClient.connect(options)
 
-            return defer.promise;
+            return defer.promise
 
           }
-        };
-      };
-    };
+        }
+      }
+    }
 
-
-  });
+  })
