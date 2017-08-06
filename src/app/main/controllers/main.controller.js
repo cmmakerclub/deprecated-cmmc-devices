@@ -161,7 +161,6 @@ var getObjectSize = function (object) {
           _controller.devices[uuid].status = 'ONLINE'
         }
       })
-
     }
 
     //asynchronously

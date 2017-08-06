@@ -9,6 +9,7 @@
   "unused": true,
   "validthis": true,
   "jasmine": true,
+  "lastsemic": false,
   "globals": {
     "angular": false,
     "inject": false,
