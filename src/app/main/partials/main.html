@@ -52,33 +52,21 @@
               <div flex="100"><b>{{device.d.myName}}</b></div>
             </div>
             <div layout="row">
-              <div flex="40">
-                ip
-              </div>
-              <div flex="60">
-                {{ device.info.ip }}
-              </div>
+              <div flex="40"> ip</div>
+              <div flex="60"> {{ device.info.ip }}</div>
             </div>
             <div layout="row">
-              <div flex="40">
-                heap
-              </div>
-              <div flex="60">
-                {{device.d.heap/1000}} kB
-              </div>
+              <div flex="40"> heap</div>
+              <div flex="60"> {{device.d.heap/1000}} kB</div>
             </div>
             <div layout="row">
-              <div flex="40">
-                run time
-              </div>
+              <div flex="40"> run time</div>
               <div flex="60">
                 {{ ((device.d.millis/1000*24)/(86400)).toFixed(5) }} hours
               </div>
             </div>
             <div layout="row">
-              <div flex="40">
-                prefix
-              </div>
+              <div flex="40"> prefix</div>
               <div flex="60">
                 {{device.info.prefix}}/{{ device.info.device_id || device.d.device_id }}/status
               </div>

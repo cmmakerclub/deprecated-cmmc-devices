@@ -1,10 +1,10 @@
 /* global malarkey:false, toastr:false, moment:false */
-(function() {
-  'use strict';
+(function () {
+  'use strict'
 
   angular
     .module('cmmcDevices')
     .constant('toastr', toastr)
-    .constant('moment', moment);
+    .constant('moment', moment)
 
-})();
+})()

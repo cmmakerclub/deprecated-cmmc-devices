@@ -1,12 +1,12 @@
 (function () {
-  'use strict';
+  'use strict'
 
   angular
     .module('cmmcDevices')
-    .config(routeConfig);
+    .config(routeConfig)
 
   /** @ngInject */
-  function routeConfig($stateProvider, $urlRouterProvider) {
+  function routeConfig ($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('home', {
         url: '/',
@@ -19,9 +19,9 @@
         templateUrl: 'app/about/partials/about.html',
         controller: 'aboutCtrl',
         controllerAs: 'about'
-      });
+      })
 
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/')
   }
 
-})();
+})()
