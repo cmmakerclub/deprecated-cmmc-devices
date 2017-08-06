@@ -35,8 +35,8 @@ var getObjectSize = function (object) {
   .controller('MainController', MainController);
 
   var default_config = {
-    host: 'mqtt.cmmc.io',
-    port: 8000,
+    host: '128.199.232.29',
+    port: 8083,
     prefix: 'CMMC',
     clientId: "CMMC-" + (Math.random() * 100)
   };
